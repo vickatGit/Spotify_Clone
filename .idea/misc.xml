@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable-v24/input_details_error_background.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable-v24/next_button_error_bg.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/circular.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/circular_green_button_bg.xml" value="0.2890625" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/home_fragment_action_bar_background.xml" value="0.2846153846153846" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/home_gradient.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/home_icon.xml" value="0.2890625" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/input_details_background.xml" value="0.2890625" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/next_button_bg.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/settings_icon.xml" value="0.2846153846153846" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/spotify_signup_intro_bg.xml" value="0.2890625" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_javaactivity.xml" value="0.27291666666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_login.xml" value="0.27291666666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_main.xml" value="0.2678396871945259" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up_login.xml" value="0.14270833333333333" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_spotify.xml" value="0.21" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/dummy_layout.xml" value="0.14270833333333333" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_home.xml" value="0.27291666666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/menu/navigation_menu.xml" value="0.27291666666666664" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

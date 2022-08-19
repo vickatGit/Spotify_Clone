@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/login_toolbar"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Email or username"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="29sp"
+        android:layout_marginTop="7dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_toolbar"/>
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/input_details_background"
+        android:padding="14dp"
+        android:textColor="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/question" />
+    <TextView
+        android:id="@+id/pass_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Password"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="29sp"
+        android:layout_marginTop="25dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pass_take_details_container"
+        app:layout_constraintTop_toBottomOf="@id/pass_question"
+        android:layout_width="match_parent"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/white"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pass_take_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:inputType="textPassword"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/input_details_background"
+            android:padding="14dp"
+            android:textColor="@color/primaryTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pass_question" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/acknowledgement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This email and password combination is incorrect"
+        android:textSize="13sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/pass_take_details_container" />
+
+    <android.widget.Button
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:clickable="false"
+        android:textSize="17sp"
+        android:textAllCaps="false"
+        android:layout_marginTop="45dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:background="@drawable/next_button_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/acknowledgement" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
