@@ -19,6 +19,7 @@ class PopularArtistAdapter(val allArtists: ArrayList<Artist>) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: ArtistHolder, position: Int) {
+
         val artist=allArtists.get(position)
         val image:SpotifyImage=artist.images.get(0)
         Glide.with(holder.artistProfile.context).load(image.url).into(holder.artistProfile)

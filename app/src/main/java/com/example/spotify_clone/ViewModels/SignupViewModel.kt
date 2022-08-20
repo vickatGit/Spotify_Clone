@@ -6,7 +6,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.spotify_clone.Models.UserModel
 import com.example.spotify_clone.Repository.DataRepository
 import com.google.firebase.Timestamp
-import kotlinx.coroutines.delay
+
 import java.util.*
 
 class SignupViewModel() : ViewModel() {
@@ -40,7 +40,7 @@ class SignupViewModel() : ViewModel() {
         val hashedPassword:String=BCrypt.withDefaults().hashToString(6,password.toCharArray())
         val user=UserModel(email,hashedPassword, Timestamp(Date(birthYear.toInt(),birthMonth.toInt(),birthDay.toInt())),gender,username,null)
         repo.createUser(user)
-        delay(2000)
+//        delay(2000)
         GetUser()
 
     }
@@ -60,7 +60,7 @@ class SignupViewModel() : ViewModel() {
 
     suspend fun isEmailAlreadyExist(email: String) {
         repo.isEmailAlreadyExist(email)
-        delay(1000)
+//        delay(1000)
         emailIsExistOrNot.postValue(repo.GetIsEmailExists())
 //<<<<<<< HEAD
 //=======

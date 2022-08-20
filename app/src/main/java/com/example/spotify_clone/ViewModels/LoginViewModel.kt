@@ -7,7 +7,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.spotify_clone.Models.UserModel
 import com.example.spotify_clone.Repository.DataRepository
 import com.example.spotify_clone.SignUpActivity
-import kotlinx.coroutines.delay
+
 
 class LoginViewModel : ViewModel() {
 
@@ -18,7 +18,7 @@ class LoginViewModel : ViewModel() {
     }
     suspend fun isUserExist(email: String, password: String) {
         repo.isUserExist(email, password)
-        delay(3000)
+//        delay(3000)
         isUser.postValue(repo.GetUser())
         Log.d("TAG", "isUserExist: "+repo.GetUser().toString())
 

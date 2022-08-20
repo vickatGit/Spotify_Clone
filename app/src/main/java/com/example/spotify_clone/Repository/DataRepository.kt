@@ -4,13 +4,17 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.adamratzman.spotify.models.Artist
+import com.adamratzman.spotify.models.SimplePlaylist
+import com.adamratzman.spotify.models.SpotifyCategory
 import com.adamratzman.spotify.spotifyAppApi
+import com.adamratzman.spotify.utils.Market
 import com.example.spotify_clone.Models.UserModel
 import com.google.firebase.FirebaseApp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +26,7 @@ class DataRepository {
     var isExist:Boolean=false
     var some: DocumentSnapshot? =null
     private var allArtists:MutableLiveData<List<Artist>?> = MutableLiveData()
+    private var allCategories:MutableLiveData<List<SimplePlaylist>> = MutableLiveData()
 
 
     companion object{
@@ -88,14 +93,31 @@ class DataRepository {
         return isExist
     }
 
-    fun fetchArtists(): MutableLiveData<List<Artist>?> {
+    fun fetchArtists(){
         CoroutineScope(Dispatchers.IO).launch {
             Log.d(TAG, "fetchArtists: repo")
             val api=spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
             val artists: List<Artist?> = api.artists.getArtists("2CIMQHirSU0MQqyYHq0eOx","57dN52uHvrHOxijzpIgu3E","1vCWHaC5f2uS3yhpwWbIA6")
             allArtists.postValue(artists as List<Artist>)
 
+
         }
+    }
+    fun fetchedArists(): MutableLiveData<List<Artist>?> {
         return allArtists
+    }
+    fun fetchTopList(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val api=spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            val categories=api.browse.getCategoryList(5,null,null,Market.IN)
+            val gson= Gson()
+
+            val playCategories:ArrayList<SpotifyCategory> = ArrayList()
+            val obj=api.browse.getPlaylistsForCategory(categories.get(0).id,6).items
+            allCategories.postValue(obj)
+        }
+    }
+    fun getAllCatgories(): MutableLiveData<List<SimplePlaylist>> {
+        return allCategories
     }
 }

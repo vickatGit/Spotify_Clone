@@ -2,7 +2,7 @@ package com.example.spotify_clone.Models
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserModel(
@@ -11,7 +11,7 @@ data class UserModel(
     val gender:String,
     val username:String,
     var userRef:String?) : Parcelable{
-        fun setuserReference(userRef: String) {
-            this.userRef=userRef
-        }
+    fun setuserReference(userRef: String) {
+        this.userRef=userRef
+    }
 }
