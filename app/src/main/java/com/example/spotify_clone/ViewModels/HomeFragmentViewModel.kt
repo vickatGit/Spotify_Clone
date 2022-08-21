@@ -15,6 +15,7 @@ class HomeFragmentViewModel: ViewModel() {
         repo=DataRepository()
         repo.fetchArtists()
         repo.fetchTopList()
+        repo.getFeaturedPlaylists()
         Log.d("TAG", "viewmodel: ")
     }
 //    fun fetchedPopularArtist(): MutableLiveData<List<Artist>?> {

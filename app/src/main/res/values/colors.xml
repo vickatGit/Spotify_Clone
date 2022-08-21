@@ -19,5 +19,6 @@
         <color name="secondaryTextColor">#ffffff</color>
         <color name="spotifyThemeColor">#00CB51</color>
     <color name="purple_600">#4820B0</color>
+    <color name="spotify_background">#0B0B0B</color>
 
 </resources>

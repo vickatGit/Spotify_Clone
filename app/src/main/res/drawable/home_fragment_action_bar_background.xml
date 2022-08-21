@@ -2,8 +2,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:startColor="@color/purple_600"
-        android:endColor="#121212"
-        android:centerColor="#121212"
+        android:endColor="@color/spotify_background"
+        android:centerColor="@color/spotify_background"
         android:useLevel="false"
 
         android:angle="-45"/>
