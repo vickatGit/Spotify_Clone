@@ -2,15 +2,12 @@ package com.example.spotify_clone.Repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import at.favre.lib.crypto.bcrypt.BCrypt
-import com.adamratzman.spotify.models.Artist
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.SpotifyCategory
 import com.adamratzman.spotify.spotifyAppApi
 import com.adamratzman.spotify.utils.Market
+import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 import com.example.spotify_clone.Models.UserModel
-import com.google.firebase.FirebaseApp
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
@@ -25,7 +22,10 @@ class DataRepository {
     var user:UserModel?=null
     var isExist:Boolean=false
     var some: DocumentSnapshot? =null
-    private var allArtists:MutableLiveData<List<Artist>?> = MutableLiveData()
+//    private var allArtists:MutableLiveData<List<Artist>?> = MutableLiveData()
+    private var allArtists:MutableLiveData<List<Thumbnail>?> = MutableLiveData()
+    private var allLists:MutableLiveData<List<List<Thumbnail>>> = MutableLiveData()
+    private var lists=ArrayList<List<Thumbnail>>(1)
     private var allCategories:MutableLiveData<List<SimplePlaylist>> = MutableLiveData()
 
 
@@ -97,14 +97,27 @@ class DataRepository {
         CoroutineScope(Dispatchers.IO).launch {
             Log.d(TAG, "fetchArtists: repo")
             val api=spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            val artists: List<Artist?> = api.artists.getArtists("2CIMQHirSU0MQqyYHq0eOx","57dN52uHvrHOxijzpIgu3E","1vCWHaC5f2uS3yhpwWbIA6")
-            allArtists.postValue(artists as List<Artist>)
-
-
+//            val artists: List<Artist?> = api.artists.getArtists("2CIMQHirSU0MQqyYHq0eOx","57dN52uHvrHOxijzpIgu3E","1vCWHaC5f2uS3yhpwWbIA6")
+            var allData:MutableLiveData<List<Thumbnail>> = MutableLiveData()
+            val thumbnails=ArrayList<Thumbnail>(1)
+            var thumb:Thumbnail
+            api.artists.getArtists("2CIMQHirSU0MQqyYHq0eOx","57dN52uHvrHOxijzpIgu3E","1vCWHaC5f2uS3yhpwWbIA6").forEach {
+                val url=it?.images?.get(it.images.size-2)?.url
+                thumb=Thumbnail(url.toString(),it?.name.toString(),it?.type.toString(),it?.id.toString(),allArtists)
+                thumb.observer = allArtists
+                thumbnails.add(thumb)
+            }
+            lists.add(thumbnails)
+            allLists.postValue(lists)
+            allArtists.postValue(thumbnails)
         }
+
     }
-    fun fetchedArists(): MutableLiveData<List<Artist>?> {
+    fun fetchedArists(): MutableLiveData<List<Thumbnail>?> {
         return allArtists
+    }
+    fun fetchedLists(): MutableLiveData<List<List<Thumbnail>>> {
+        return allLists
     }
     fun fetchTopList(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -114,6 +127,7 @@ class DataRepository {
 
             val playCategories:ArrayList<SpotifyCategory> = ArrayList()
             val obj=api.browse.getPlaylistsForCategory(categories.get(0).id,6).items
+
             allCategories.postValue(obj)
         }
     }
