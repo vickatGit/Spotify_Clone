@@ -13,8 +13,12 @@ class HomeFragmentViewModel: ViewModel() {
     private lateinit var repo:DataRepository
     init {
         repo=DataRepository()
+
         repo.fetchArtists()
         repo.fetchTopList()
+        repo.getRecommendations()
+        repo.getIndianCategoriesPlaylists()
+        repo.getChillPlaylist()
         repo.getFeaturedPlaylists()
         Log.d("TAG", "viewmodel: ")
     }

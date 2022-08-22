@@ -56,14 +56,13 @@ class ParentClassAdapter(
                 allCategories.clear()
                 allCategories.addAll(it)
                 homeTopCategoryAdaptor.notifyDataSetChanged()
-
             })
         }
         else {
             val holder=holder as ListHolder
 
             holder.list.layoutManager = LinearLayoutManager(requireActivity, LinearLayoutManager.HORIZONTAL, false)
-            holder.about.text = allLists.get(position).get(0).name
+            holder.about.text = allLists.get(position).get(0).title
             val childList = allLists.get(position)
             val childAdapter = ChildListAdapter(childList, requireActivity)
             holder.list.setAdapter(childAdapter)

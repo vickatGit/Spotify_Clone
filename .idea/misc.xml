@@ -6,6 +6,7 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable-v24/input_details_error_background.xml" value="0.15885416666666666" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable-v24/next_button_error_bg.xml" value="0.15885416666666666" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/bottom_naviagtion_icon_selector_bg.xml" value="0.23802083333333332" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/bottom_navigation_bg.xml" value="0.13020833333333334" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/circular.xml" value="0.15885416666666666" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/circular_green_button_bg.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/home_fragment_action_bar_background.xml" value="0.2846153846153846" />
@@ -23,7 +24,7 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up_login.xml" value="0.14270833333333333" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_spotify.xml" value="0.21" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/artist_layout.xml" value="0.25" />
-        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/dummy_layout.xml" value="0.14270833333333333" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/dummy_layout.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_home.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_list_layout.xml" value="0.24048913043478262" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_top_and_grid_layout.xml" value="0.25" />
