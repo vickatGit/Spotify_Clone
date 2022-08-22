@@ -15,11 +15,13 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/home_top_bg.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/input_details_background.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/next_button_bg.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/playlist_activity_action_bar_bg.xml" value="0.26979166666666665" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/settings_icon.xml" value="0.2846153846153846" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/spotify_signup_intro_bg.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_javaactivity.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_login.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_main.xml" value="0.2678396871945259" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_playlist.xml" value="0.33" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up_login.xml" value="0.14270833333333333" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_spotify.xml" value="0.21" />
@@ -29,6 +31,7 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_list_layout.xml" value="0.24048913043478262" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_top_and_grid_layout.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_top_layout.xml" value="0.33" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/track_layout.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/menu/navigation_menu.xml" value="0.27291666666666664" />
       </map>
     </option>

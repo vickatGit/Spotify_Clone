@@ -1,5 +1,6 @@
 package com.example.spotify_clone.Adapters
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.adamratzman.spotify.SpotifyAppApi
+import com.adamratzman.spotify.spotifyAppApi
 import com.adamratzman.spotify.utils.Locale
 import com.bumptech.glide.Glide
 import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
+import com.example.spotify_clone.PlaylistActivity
 import com.example.spotify_clone.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: FragmentActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var thumbs=ArrayList<Thumbnail>(1)
@@ -53,10 +60,28 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
             Log.d("TAG", "onBindViewHolder: " + thumb.name)
             holder.artistName.text = thumb.name
         }else{
+            val CLIENT_ID="a7ade92373684af7b78d8382b1031827"
+            val CLIENT_SECRET="4b8c41c29cfd497298b910335d9599a1"
+
             var holder=holder as GenricThumbHolder
             Glide.with(holder.coverImage.context).load(thumb.imageUrl).into(holder.coverImage)
             Log.d("TAG", "onBindViewHolder: " + thumb.name)
             holder.artistsName.text = thumb.name
+            holder.cover.setOnClickListener {
+                if(thumb.type.equals("playlist",true)){
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        val api= spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+//                        api.playlists.getPlaylistTracks(thumb.next,3).items.forEach {
+//                            val track=api.tracks.getTrack(it.track?.id.toString())?.asTrack
+//                            Log.d("TAG", "fetched tracks: "+api.tracks.getTrack(it.track?.id.toString())?.asTrack)
+//                        }
+//
+//                    }
+                    val intent= Intent(holder.cover.context,PlaylistActivity::class.java)
+                    intent.putExtra("id",thumb.next)
+                    requireActivity.startActivity(intent)
+                }
+            }
         }
     }
 
@@ -81,11 +106,13 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
     inner class ArtistHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var artistProfile:ImageView=itemView.findViewById(R.id.artist_profile)
         var artistName:TextView=itemView.findViewById(R.id.artist_name)
+        var cover:View=itemView
 
     }
     inner class GenricThumbHolder(view: View) : RecyclerView.ViewHolder(view){
         var coverImage:ImageView=view.findViewById(R.id.cover_image)
         var artistsName:TextView=view.findViewById(R.id.artist_names)
+        var cover:View=view
 
     }
 
