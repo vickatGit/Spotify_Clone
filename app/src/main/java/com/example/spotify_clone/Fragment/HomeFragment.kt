@@ -1,5 +1,6 @@
 package com.example.spotify_clone.Fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 
@@ -23,20 +24,18 @@ import com.example.spotify_clone.ViewModels.HomeFragmentViewModel
 
 class HomeFragment : Fragment() {
     private lateinit var viewModel:HomeFragmentViewModel
-//    private lateinit var artists:RecyclerView
     private lateinit var allListsRecyclerView:RecyclerView
     private lateinit var topScroller:ScrollView
-//    private lateinit var allArtists:ArrayList<Artist>
     private lateinit var allLists:ArrayList<List<Thumbnail>>
-//    private lateinit var allCategories:ArrayList<SimplePlaylist>
     private lateinit var allListAdapter: ParentClassAdapter
-//    private lateinit var homeTopCategoryAdaptor:HomeTopAdapter
-//    private lateinit var actionBarView:View
-//    private lateinit var gridView:RecyclerView
 
+    companion object{
+        private val TAG="tag"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate: lifecycle")
         viewModel=ViewModelProvider(this.requireActivity()).get(HomeFragmentViewModel::class.java)
     }
 
@@ -44,46 +43,69 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        Log.d(TAG, "onCreateView: lifecycle")
         val view=inflater.inflate(R.layout.fragment_home, container, false)
         initialiseViews(view)
 
         allLists= ArrayList(1)
-//        gridView.layoutManager=GridLayoutManager(this.context,2)
         allListsRecyclerView.layoutManager=LinearLayoutManager(this.context)
         allListAdapter=ParentClassAdapter(allLists,this.requireActivity(),viewModel)
         allListsRecyclerView.adapter=allListAdapter
 
-//        allCategories= ArrayList(5)
-
-
-
-//        homeTopCategoryAdaptor= HomeTopAdapter(allCategories)
-//        gridView.adapter=homeTopCategoryAdaptor
-
-//        artists.adapter=artistsAdapter
 
         viewModel.getFetchedLists().observe(this.requireActivity(), Observer {
             if(it!=null){
                 allLists.clear()
                 Log.d("TAG", "onCreateView: parent notify data set changed and size is ${it}")
                 allLists.addAll(it)
-//                allArtists.clear()
-//                allArtists.addAll(it)
-//                artistsAdapter.notifyDataSetChanged()
                 allListAdapter.notifyDataSetChanged()
             }
         })
         return view
     }
 
+    override fun onAttach(activity: Activity) {
+        Log.d(TAG, "onAttach: lifecycle")
+        super.onAttach(activity)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewCreated: lifecycle")
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onStart() {
+        Log.d(TAG, "onStart: lifecycle")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d(TAG, "onResume: lifecycle")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d(TAG, "onPause: lifecycle")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d(TAG, "onStop: lifecycle")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: lifecycle")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d(TAG, "onDetach: lifecycle")
+        super.onDetach()
+    }
+
     private fun initialiseViews(view: View?) {
-//        artists= view?.findViewById(R.id.all_lists)!!
-//        actionBarView=view.findViewById(R.id.action_bar_gradient)
-//        gridView=view.findViewById(R.id.layout_grid)
         allListsRecyclerView=view?.findViewById(R.id.all_lists)!!
-//        artists.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL,false)
-//        allArtists= ArrayList<Artist>()
 
     }
 }

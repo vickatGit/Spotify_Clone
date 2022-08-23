@@ -8,17 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
-import com.adamratzman.spotify.SpotifyAppApi
-import com.adamratzman.spotify.spotifyAppApi
-import com.adamratzman.spotify.utils.Locale
 import com.bumptech.glide.Glide
 import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
-import com.example.spotify_clone.PlaylistActivity
 import com.example.spotify_clone.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: FragmentActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var thumbs=ArrayList<Thumbnail>(1)
@@ -69,17 +63,13 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
             holder.artistsName.text = thumb.name
             holder.cover.setOnClickListener {
                 if(thumb.type.equals("playlist",true)){
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        val api= spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-//                        api.playlists.getPlaylistTracks(thumb.next,3).items.forEach {
-//                            val track=api.tracks.getTrack(it.track?.id.toString())?.asTrack
-//                            Log.d("TAG", "fetched tracks: "+api.tracks.getTrack(it.track?.id.toString())?.asTrack)
-//                        }
-//
-//                    }
                     val intent= Intent(holder.cover.context,PlaylistActivity::class.java)
                     intent.putExtra("id",thumb.next)
-                    requireActivity.startActivity(intent)
+                    intent.putExtra("type","playlist")
+                    intent.setAction("launchPlaylist")
+
+                    LocalBroadcastManager.getInstance(requireActivity).sendBroadcast(intent)
+
                 }
             }
         }

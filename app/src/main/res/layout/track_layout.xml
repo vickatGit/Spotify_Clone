@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_marginTop="20dp"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/song_thumbnail"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/sample_artist"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -17,8 +18,13 @@
         android:id="@+id/song_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="10dp"
         android:ellipsize="marquee"
         android:lines="1"
+        android:layout_marginTop="7dp"
         android:text="Light switch"
         app:layout_constraintEnd_toStartOf="@+id/menu"
         app:layout_constraintStart_toEndOf="@+id/song_thumbnail"
@@ -26,10 +32,11 @@
 
     <ImageView
         android:id="@+id/menu"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
         android:src="@drawable/menu_icon"
-        android:tint="@color/secondaryTextColor"
+        android:tint="#A5A6A6"
+
         app:layout_constraintBottom_toBottomOf="@+id/song_thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/song_thumbnail"
@@ -39,8 +46,9 @@
         android:id="@+id/artists"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:text="artists"
-        app:layout_constraintBottom_toBottomOf="@+id/song_thumbnail"
+
         app:layout_constraintStart_toEndOf="@+id/song_thumbnail"
         app:layout_constraintTop_toBottomOf="@+id/song_name" />
 

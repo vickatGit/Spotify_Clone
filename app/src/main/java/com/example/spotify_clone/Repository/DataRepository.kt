@@ -235,6 +235,7 @@ class DataRepository {
             val tracks=ArrayList<PlaylistTrack>(1)
             api.playlists.getPlaylistTracks(id!!).items.forEach {
                 tracks.add(it)
+                Log.d(TAG, "fetchTracks: $it")
             }
             allTracks.postValue(tracks)
         }

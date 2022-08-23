@@ -14,22 +14,38 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/spotify_frame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+<!--            <ImageView-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:src="@drawable/sample_artist"/>-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        app:backgroundTint="@android:color/transparent"
+        app:itemBackground="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:contentInsetStart="0dp"
-
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="BottomAppBar">
+        app:menu="@menu/navigation_menu" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:menu="@menu/navigation_menu" />
-    </com.google.android.material.bottomappbar.BottomAppBar>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

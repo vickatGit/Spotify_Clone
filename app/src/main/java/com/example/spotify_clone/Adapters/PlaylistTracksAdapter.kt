@@ -20,9 +20,10 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: TrackHolder, position: Int) {
-        holder.songName.text= allTracks.get(position).track?.asTrack?.name
-        holder.songArtists.text=allTracks.get(position).track?.asTrack?.artists.toString()
-        Log.d("TAG", "onBindViewHolder: tracks"+allTracks.get(position).track?.asTrack?.name)
+        val track=allTracks.get(position).track?.asTrack
+        holder.songName.text= track?.asTrack?.name
+        holder.songArtists.text=track?.asTrack?.artists?.get(0)?.name
+        Glide.with(holder.songThumbnail.context).load(track?.album?.images?.get(track?.album.images.size-1)?.url).into(holder.songThumbnail)
     }
 
     override fun getItemCount(): Int {
