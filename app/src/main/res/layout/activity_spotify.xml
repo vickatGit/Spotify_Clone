@@ -14,33 +14,124 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <LinearLayout
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/song_controller_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/spotify_frame"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="13dp"
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="wrap_content"
+            android:background="#201737">
 
-<!--            <ImageView-->
-<!--                android:layout_width="60dp"-->
-<!--                android:layout_height="60dp"-->
-<!--                android:src="@drawable/sample_artist"/>-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/song_controller_thumbnail_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="7dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/song_controller_thumbnail"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerCrop"
+
+                    android:src="@drawable/sample_artist" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/song_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="10dp"
+                android:text="Love again"
+                android:lines="1"
+                android:ellipsize="marquee"
+                android:textColor="@color/secondaryTextColor"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/like_btn"
+                app:layout_constraintStart_toEndOf="@+id/song_controller_thumbnail_card"
+                app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
+
+            <TextView
+                android:id="@+id/song_artist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Dua Lipa"
+                android:textSize="13sp"
+                android:lines="1"
+                android:ellipsize="marquee"
+                app:layout_constraintEnd_toStartOf="@+id/like_btn"
+                app:layout_constraintStart_toEndOf="@+id/song_controller_thumbnail_card"
+                app:layout_constraintTop_toBottomOf="@+id/song_name" />
+
+            <ToggleButton
+                android:id="@+id/like_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="13dp"
+                android:background="@drawable/like_toggle_bg"
+                android:buttonTint="@color/white"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="@+id/song_controller_thumbnail_card"
+                app:layout_constraintEnd_toStartOf="@+id/play_pause_song"
+                app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
+
+            <ToggleButton
+                android:id="@+id/play_pause_song"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="13dp"
+                android:background="@drawable/play_pause_drawable"
+                android:buttonTint="@color/white"
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="@+id/song_controller_thumbnail_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <ProgressBar
+            android:id="@+id/song_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:indeterminateTint="@color/white"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
 
-    </LinearLayout>
+            android:layout_gravity="bottom"
+            />
+    </com.google.android.material.card.MaterialCardView>
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+
+
         app:backgroundTint="@android:color/transparent"
         app:itemBackground="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"

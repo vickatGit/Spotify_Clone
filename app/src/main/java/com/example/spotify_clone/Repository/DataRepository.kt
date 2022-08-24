@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.adamratzman.spotify.endpoints.pub.TrackAttribute
 import com.adamratzman.spotify.endpoints.pub.TuneableTrackAttribute
-import com.adamratzman.spotify.models.Playlist
-import com.adamratzman.spotify.models.PlaylistTrack
-import com.adamratzman.spotify.models.SimplePlaylist
-import com.adamratzman.spotify.models.SpotifyCategory
+import com.adamratzman.spotify.models.*
 import com.adamratzman.spotify.spotifyAppApi
 import com.adamratzman.spotify.utils.Locale
 import com.adamratzman.spotify.utils.Market
@@ -42,6 +39,9 @@ class DataRepository {
 
     private var allTracks:MutableLiveData<List<PlaylistTrack>> = MutableLiveData()
     private var playlistInfo:MutableLiveData<Playlist> = MutableLiveData()
+
+    private var genres:MutableLiveData<List<String>> = MutableLiveData()
+    private var searchedTracks:MutableLiveData<List<Track>> = MutableLiveData()
 
     companion object{
 
@@ -161,7 +161,7 @@ class DataRepository {
             api.browse.getFeaturedPlaylists(10,null,null,Market.US).playlists.items.forEach {
                 thumb=Thumbnail(it.images.get(it.images.size-1).url, it.name, it.type, it.id, featuredPlaylists, "Featured Playlist")
                 thumbnails.add(thumb)
-                Log.d(TAG, "getFeaturedPlaylists: types"+it.primaryColor)
+                Log.d(TAG, "getFeaturedPlaylists: types"+it.type)
             }
             commonLists.add(thumbnails)
             Log.d(TAG, "getFeaturedPlaylists: length "+ commonLists.size)
@@ -178,7 +178,7 @@ class DataRepository {
                 thumb= Thumbnail(it.images.get(it.images.size-1).url,it.name,it.type,it.id,chillPlaylist,"Chill Playlists")
                 Log.d(TAG, "getChillPlaylist: $thumb")
                 thumbnails.add(thumb)
-                Log.d(TAG, "getChillPlaylist: types "+it.primaryColor)
+                Log.d(TAG, "getChillPlaylist: types "+it.type)
             }
             commonLists.add(thumbnails)
             allLists.postValue(commonLists)
@@ -219,7 +219,7 @@ class DataRepository {
                     indianCategories.add(curpos,MutableLiveData())
                     thumb= Thumbnail(it.images.get(0).url,it.name,it.type,it.id,indianCategories.get(curpos),name)
                     thumbnails.add(thumb)
-                    Log.d(TAG, "getIndianCategoriesPlaylists: types "+it.primaryColor)
+                    Log.d(TAG, "getIndianCategoriesPlaylists: types "+it.type)
                 }
                 commonLists.add(thumbnails)
                 allLists.postValue(commonLists)
@@ -252,6 +252,29 @@ class DataRepository {
             playlistInfo.postValue(playlist)
         }
         return playlistInfo
+    }
+
+    fun getGenres(): MutableLiveData<List<String>> {
+        val allGenres=ArrayList<String>(1)
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            allGenres.addAll(api.browse.getAvailableGenreSeeds())
+            genres.postValue(allGenres)
+        }
+        return genres
+    }
+
+    fun search(newText: String?): MutableLiveData<List<Track>> {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            searchedTracks.postValue(api.search.searchTrack(newText!!,null,null,Market.IN).items)
+        }
+        return searchedTracks
+    }
+
+    fun getSearches(): MutableLiveData<List<Track>> {
+        return searchedTracks
+
     }
 //    fun initialiseIndianCategoriesLiveData(){
 //        indianCategories[0]

@@ -63,7 +63,7 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
             holder.artistsName.text = thumb.name
             holder.cover.setOnClickListener {
                 if(thumb.type.equals("playlist",true)){
-                    val intent= Intent(holder.cover.context,PlaylistActivity::class.java)
+                    val intent= Intent()
                     intent.putExtra("id",thumb.next)
                     intent.putExtra("type","playlist")
                     intent.setAction("launchPlaylist")

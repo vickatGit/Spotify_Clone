@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +52,7 @@ class PlaylistFragment : Fragment() {
         // Inflate the layout for this fragment
         val view=inflater.inflate(R.layout.fragment_playlist, container, false)
         initialiseViews(view)
+        ViewCompat.setNestedScrollingEnabled(allTrackesRecycler,false)
         tracksAdapter= PlaylistTracksAdapter(allTracks)
         allTrackesRecycler.layoutManager= LinearLayoutManager(this.requireContext())
         allTrackesRecycler.adapter=tracksAdapter
