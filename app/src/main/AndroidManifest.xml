@@ -15,6 +15,7 @@
         <activity
             android:name=".SpotifyActivity"
             android:windowSoftInputMode="adjustNothing"
+            android:hardwareAccelerated="true"
             android:exported="false"></activity>
         <activity
             android:name=".LoginActivity"

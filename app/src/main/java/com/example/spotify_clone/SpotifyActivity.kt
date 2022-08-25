@@ -118,9 +118,5 @@ class SpotifyActivity : AppCompatActivity() {
             supportFragmentManager.popBackStack()
         else
             super.onBackPressed()
-//        if(supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount)== supportFragmentManager.findFragmentById(search_song_fragment)) {
-//            if (!findViewById<androidx.appcompat.widget.SearchView>(R.id.search_song).isIconified)
-//                findViewById<androidx.appcompat.widget.SearchView>(R.id.search_song).visibility = View.INVISIBLE
-//        }
     }
 }

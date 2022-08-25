@@ -12,13 +12,23 @@ class SearchSongFragmentViewModel: ViewModel() {
     init {
         repo= DataRepository.getInstance()
     }
-    fun search(newText: String?): MutableLiveData<List<Thumbnail>?> {
+    fun searchSong(newText: String?): MutableLiveData<List<Thumbnail>?> {
         if(newText!=null) {
-            return repo.search(newText)
+            return repo.searchSong(newText)
         }
         else{
             return repo.getSearches()
         }
     }
+    fun searchArtist(text:String){
+        repo.searchArtists(text)
+    }
+    fun searchAlbum(text: String) {
+        repo.searchAlbums(text)
+    }
+    fun searchPlaylist(text:String){
+        repo.searchPlaylist(text)
+    }
+
 
 }

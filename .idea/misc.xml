@@ -40,13 +40,16 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search_song.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search_song_viemodel.xml" value="0.27291666666666664" />
-        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/generic_thumb_layout.xml" value="0.27291666666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/generic_thumb_layout.xml" value="0.23655913978494625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_list_layout.xml" value="0.24048913043478262" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_top_and_grid_layout.xml" value="0.10505836575875487" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_top_layout.xml" value="0.17307692307692307" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/playlist_top_action_bar.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/search.xml" value="1.8714285714285714" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/search_artist_thumbnail_layout.xml" value="0.25729166666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/search_genres_layout.xml" value="0.33" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/search_playlist_thumbnail_layout.xml" value="0.25729166666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/search_thumbnail_layout.xml" value="0.25729166666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/track_layout.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/menu/navigation_menu.xml" value="0.27291666666666664" />
       </map>

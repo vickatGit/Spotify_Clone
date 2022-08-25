@@ -1,6 +1,7 @@
 package com.example.spotify_clone.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spotify_clone.Adapters.SearchSongAdapter
@@ -24,9 +26,9 @@ class SearchSongFragment : Fragment() {
     private lateinit var searchClick:TextView
     private lateinit var searchSong:androidx.appcompat.widget.SearchView
     private lateinit var viewModel:SearchSongFragmentViewModel
-    private lateinit var searchedResults:RecyclerView
+    private lateinit var searchedResultsRecycler:RecyclerView
     private lateinit var searchedResultesAdapter: SearchSongAdapter
-    private  var searchedTracks=ArrayList<Thumbnail>(1)
+    private  var searchedResults=ArrayList<Thumbnail>(1)
     private lateinit var searchFilters:ChipGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,15 +43,27 @@ class SearchSongFragment : Fragment() {
         // Inflate the layout for this fragment
         val view=inflater.inflate(R.layout.fragment_search_song, container, false)
         initialise(view)
-        searchedResults.layoutManager=LinearLayoutManager(this.requireContext())
-        searchedResultesAdapter=SearchSongAdapter(searchedTracks)
-        searchedResults.adapter=searchedResultesAdapter
+        searchedResultsRecycler.layoutManager=LinearLayoutManager(this.requireContext())
+        searchedResultesAdapter=SearchSongAdapter(searchedResults)
+        searchedResultsRecycler.adapter=searchedResultesAdapter
 
 
-        viewModel.search(null).observe(this.viewLifecycleOwner, Observer {
-            searchedTracks.clear()
-            searchedTracks.addAll(it)
-            searchedResultesAdapter.notifyDataSetChanged()
+        viewModel.searchSong(null).observe(this.viewLifecycleOwner, Observer {
+            if(it!=null && it.size>0) {
+            Log.d("TAG", "onCreateView: observing searches"+it?.get(0)?.type)
+                if (it?.get(0)?.type == "playlist" || it?.get(0)?.type == "album") {
+                    searchedResultsRecycler.layoutManager =
+                        LinearLayoutManager(this.requireContext())
+                    searchedResults.clear()
+                    searchedResults.addAll(it)
+                    searchedResultesAdapter.notifyDataSetChanged()
+                } else {
+                    searchedResultsRecycler.layoutManager=GridLayoutManager(this.requireContext(),1)
+                    searchedResults.clear()
+                    searchedResults.addAll(it!!)
+                    searchedResultesAdapter.notifyDataSetChanged()
+                }
+            }
         })
         searchCard.setOnClickListener {
             searchSong.visibility=View.VISIBLE
@@ -62,43 +76,41 @@ class SearchSongFragment : Fragment() {
             return@setOnCloseListener true
         }
         searchFilters.setOnCheckedStateChangeListener { group, checkedIds ->
-            when(checkedIds.get(0)){
-                R.id.song_filter ->{
-
-                }
-            }
+            fetchResults(searchSong.query.toString())
         }
         searchSong.setOnQueryTextListener(object:SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if(query!=null && query!="") {
-                    viewModel.search(query)
-                    searchedTracks.clear()
-                    searchedResultesAdapter.notifyDataSetChanged()
+                    fetchResults(query)
                 }
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if(newText!=null && newText!="") {
-                    viewModel.search(newText)
-                    searchedTracks.clear()
-                    searchedResultesAdapter.notifyDataSetChanged()
+                    fetchResults(newText)
                 }
                 return true
             }
-
-
         })
-
         return view
+    }
+
+    private fun fetchResults( text:String){
+        Log.d("TAG", "fetchResults: $text")
+        when(searchFilters.checkedChipId){
+            R.id.song_filter -> viewModel.searchSong(text)
+            R.id.artist_filter -> viewModel.searchArtist(text)
+            R.id.playlist_filter -> viewModel.searchPlaylist(text)
+            R.id.album_filter -> viewModel.searchAlbum(text)
+        }
     }
 
     private fun initialise(view: View?) {
         searchCard=view?.findViewById(R.id.search_card)!!
         searchSong=view?.findViewById(R.id.search_song)!!
         searchClick=view?.findViewById(R.id.search_click)!!
-        searchedResults=view?.findViewById(R.id.searched_results)!!
+        searchedResultsRecycler=view?.findViewById(R.id.searched_results)!!
         searchFilters=view?.findViewById(R.id.search_filters)
     }
 
