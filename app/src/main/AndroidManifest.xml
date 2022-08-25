@@ -11,11 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpotifyClone">
-        <activity
-            android:name=".PlaylistActivity"
-            android:exported="false" />
+
         <activity
             android:name=".SpotifyActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:exported="false"></activity>
         <activity
             android:name=".LoginActivity"

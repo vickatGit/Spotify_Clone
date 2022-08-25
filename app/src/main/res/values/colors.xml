@@ -9,15 +9,15 @@
     <color name="white">#FFFFFFFF</color>
 
 
-        <color name="primaryColor">#020202</color>
-        <color name="primaryLightColor">#2d2d2d</color>
-        <color name="primaryDarkColor">#000000</color>
-        <color name="secondaryColor">#2d2e30</color>
-        <color name="secondaryLightColor">#565759</color>
-        <color name="secondaryDarkColor">#020307</color>
-        <color name="primaryTextColor">#ffffff</color>
-        <color name="secondaryTextColor">#ffffff</color>
-        <color name="spotifyThemeColor">#00CB51</color>
+    <color name="primaryColor">#020202</color>
+    <color name="primaryLightColor">#2d2d2d</color>
+    <color name="primaryDarkColor">#000000</color>
+    <color name="secondaryColor">#2d2e30</color>
+    <color name="secondaryLightColor">#565759</color>
+    <color name="secondaryDarkColor">#020307</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
+    <color name="spotifyThemeColor">#00CB51</color>
     <color name="purple_600">#4820B0</color>
     <color name="spotify_background">#0B0B0B</color>
 

@@ -17,7 +17,7 @@
 
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/song_controller_card"
+        android:id="@+id/spotify_controller_card"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"

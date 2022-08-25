@@ -8,9 +8,9 @@ import androidx.room.Query
 @Dao
 interface UserLoginDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: SqlUserEntity)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  fun insertUser(user: SqlUserEntity)
 
-    @Query("SELECT * FROM SqlUserEntity")
-    fun getUser():SqlUserEntity
+  @Query("SELECT * FROM SqlUserEntity")
+  fun getUser():SqlUserEntity
 }

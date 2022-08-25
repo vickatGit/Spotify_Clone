@@ -27,7 +27,7 @@ class SearchGenresAdapter(val allGenres: ArrayList<String>) : RecyclerView.Adapt
         return allGenres.size
     }
     inner class GenresViewHolder(view: View) :RecyclerView.ViewHolder(view){
-//        var genresCard:CardView=view.findViewById(R.id.genres_card)
+        var genresCard:CardView=view.findViewById(R.id.genres_card)
         var genresTitle: TextView =view.findViewById(R.id.genres)
     }
 }

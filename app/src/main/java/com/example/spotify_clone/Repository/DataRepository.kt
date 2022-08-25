@@ -9,6 +9,8 @@ import com.adamratzman.spotify.spotifyAppApi
 import com.adamratzman.spotify.utils.Locale
 import com.adamratzman.spotify.utils.Market
 import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
+//import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
+//import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 import com.example.spotify_clone.Models.UserModel
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,7 +43,7 @@ class DataRepository {
     private var playlistInfo:MutableLiveData<Playlist> = MutableLiveData()
 
     private var genres:MutableLiveData<List<String>> = MutableLiveData()
-    private var searchedTracks:MutableLiveData<List<Track>> = MutableLiveData()
+    private var searchedTracks:MutableLiveData<List<Thumbnail>?> = MutableLiveData()
 
     companion object{
 
@@ -155,7 +157,7 @@ class DataRepository {
     fun getFeaturedPlaylists(){
         CoroutineScope(Dispatchers.IO).launch {
             val api=spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            var thumb:Thumbnail
+            var thumb: Thumbnail
             var thumbnails=ArrayList<Thumbnail>(1)
 
             api.browse.getFeaturedPlaylists(10,null,null,Market.US).playlists.items.forEach {
@@ -264,21 +266,20 @@ class DataRepository {
         return genres
     }
 
-    fun search(newText: String?): MutableLiveData<List<Track>> {
+    fun search(newText: String?): MutableLiveData<List<Thumbnail>?> {
         CoroutineScope(Dispatchers.IO).launch {
             val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            searchedTracks.postValue(api.search.searchTrack(newText!!,null,null,Market.IN).items)
+            var thumb:Thumbnail
+            var thumbnails=ArrayList<Thumbnail>(1)
+            api.search.searchTrack(newText!!,null,null,Market.IN).items.forEach {
+                thumb= Thumbnail(it.album.images.get(it.album.images.size-1).url,it.name,it.type,it.id,searchedTracks,"")
+            }
+
         }
         return searchedTracks
     }
 
-    fun getSearches(): MutableLiveData<List<Track>> {
+    fun getSearches(): MutableLiveData<List<Thumbnail>?> {
         return searchedTracks
 
     }
-//    fun initialiseIndianCategoriesLiveData(){
-//        indianCategories[0]
-//    }
-}
-//0JQ5DAqbMKFHCxg5H5PtqW
-//BQCIPfMoNAoxM9ahxRWQ38WBA6zsbfGctJF7BcybCgVNIczPdSofweht9D_2vivHddDV2_SgeVDcug3HbW4dbLeCbUJKrRPf3SgpzO6x0ndS70Rawr0

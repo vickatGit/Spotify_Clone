@@ -11,21 +11,21 @@ import com.example.spotify_clone.SignUpActivity
 
 class LoginViewModel : ViewModel() {
 
-    private lateinit var repo: DataRepository
-    private var isUser: MutableLiveData<UserModel> = MutableLiveData()
-    init {
-        repo= DataRepository.getInstance()
-    }
-    suspend fun isUserExist(email: String, password: String) {
-        repo.isUserExist(email, password)
+  private lateinit var repo: DataRepository
+  private var isUser: MutableLiveData<UserModel> = MutableLiveData()
+  init {
+    repo= DataRepository.getInstance()
+  }
+  suspend fun isUserExist(email: String, password: String) {
+    repo.isUserExist(email, password)
 //        delay(3000)
-        isUser.postValue(repo.GetUser())
-        Log.d("TAG", "isUserExist: "+repo.GetUser().toString())
+    isUser.postValue(repo.GetUser())
+    Log.d("TAG", "isUserExist: "+repo.GetUser().toString())
 
 
-    }
+  }
 
-    fun getUser(): MutableLiveData<UserModel> {
-        return isUser
-    }
+  fun getUser(): MutableLiveData<UserModel> {
+    return isUser
+  }
 }

@@ -12,10 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.adamratzman.spotify.models.Track
 import com.example.spotify_clone.Adapters.SearchSongAdapter
+import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 import com.example.spotify_clone.R
 import com.example.spotify_clone.ViewModels.SearchSongFragmentViewModel
+import com.google.android.material.chip.ChipGroup
 
 class SearchSongFragment : Fragment() {
 
@@ -25,7 +26,8 @@ class SearchSongFragment : Fragment() {
     private lateinit var viewModel:SearchSongFragmentViewModel
     private lateinit var searchedResults:RecyclerView
     private lateinit var searchedResultesAdapter: SearchSongAdapter
-    private  var searchedTracks=ArrayList<Track>(1)
+    private  var searchedTracks=ArrayList<Thumbnail>(1)
+    private lateinit var searchFilters:ChipGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,15 +61,30 @@ class SearchSongFragment : Fragment() {
             searchClick.visibility=View.VISIBLE
             return@setOnCloseListener true
         }
+        searchFilters.setOnCheckedStateChangeListener { group, checkedIds ->
+            when(checkedIds.get(0)){
+                R.id.song_filter ->{
+
+                }
+            }
+        }
         searchSong.setOnQueryTextListener(object:SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.search(query)
+                if(query!=null && query!="") {
+                    viewModel.search(query)
+                    searchedTracks.clear()
+                    searchedResultesAdapter.notifyDataSetChanged()
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.search(newText)
+                if(newText!=null && newText!="") {
+                    viewModel.search(newText)
+                    searchedTracks.clear()
+                    searchedResultesAdapter.notifyDataSetChanged()
+                }
                 return true
             }
 
@@ -82,6 +99,7 @@ class SearchSongFragment : Fragment() {
         searchSong=view?.findViewById(R.id.search_song)!!
         searchClick=view?.findViewById(R.id.search_click)!!
         searchedResults=view?.findViewById(R.id.searched_results)!!
+        searchFilters=view?.findViewById(R.id.search_filters)
     }
 
 
