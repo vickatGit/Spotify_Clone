@@ -52,8 +52,7 @@ class SearchSongFragment : Fragment() {
             if(it!=null && it.size>0) {
             Log.d("TAG", "onCreateView: observing searches"+it?.get(0)?.type)
                 if (it?.get(0)?.type == "playlist" || it?.get(0)?.type == "album") {
-                    searchedResultsRecycler.layoutManager =
-                        LinearLayoutManager(this.requireContext())
+                    searchedResultsRecycler.layoutManager = GridLayoutManager(this.requireContext(),2)
                     searchedResults.clear()
                     searchedResults.addAll(it)
                     searchedResultesAdapter.notifyDataSetChanged()

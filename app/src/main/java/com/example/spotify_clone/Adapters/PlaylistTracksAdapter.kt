@@ -42,6 +42,7 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
             Log.d("TAG", "track name: " + track?.name + "and album name is" + track?.album?.name)
             val intent = Intent()
             val bundle = Bundle()
+            bundle.putString("SongAction","clear_and_play")
             bundle.putParcelable("track", trackInfo)
             intent.putExtra("track", bundle)
             intent.setAction("recieveTrack")

@@ -1,5 +1,6 @@
 package com.example.spotify_clone.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,21 +12,27 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.adamratzman.spotify.models.PlaylistTrack
 import com.bumptech.glide.Glide
 import com.example.spotify_clone.Adapters.PlaylistTracksAdapter
+import com.example.spotify_clone.Models.ApiRelatedModels.TrackModel
 import com.example.spotify_clone.R
+import com.example.spotify_clone.SpotifyActivity
 import com.example.spotify_clone.ViewModels.PlaylistActivityViewModel
 import com.google.android.material.appbar.CollapsingToolbarLayout
 
 
 class PlaylistFragment : Fragment() {
+
 
     private lateinit var id:String
     private lateinit var type:String
@@ -35,8 +42,10 @@ class PlaylistFragment : Fragment() {
     private lateinit var playlistThumbnail: ImageView
     private lateinit var toolbar: CollapsingToolbarLayout
     private lateinit var allTrackesRecycler: RecyclerView
+    private lateinit var playPausePlaylist:ToggleButton
     private lateinit var tracksAdapter: PlaylistTracksAdapter
     private var allTracks= ArrayList<PlaylistTrack>()
+    private var allTracksInfos= ArrayList<TrackModel>()
     private lateinit var progress: ProgressBar
     private lateinit var playlistView: CoordinatorLayout
 
@@ -45,6 +54,9 @@ class PlaylistFragment : Fragment() {
         this.id= arguments?.getString("id").toString()
         this.type= arguments?.getString("type").toString()
 
+    }
+    companion object{
+        val RECIEVE_PLAYLIST: String="recieve_playlist"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -72,9 +84,30 @@ class PlaylistFragment : Fragment() {
             allTracks.clear()
             Log.d("TAG", "onCreate: fetchedtracks $it")
             allTracks.addAll(it)
+            var trackModel:TrackModel
+            allTracksInfos.clear()
+            it.forEach {
+                val track=it?.track
+                trackModel=TrackModel(track?.id,track?.asTrack?.album?.images?.get(track?.asTrack?.album?.images?.size!!-1)?.url,track?.asTrack?.name,
+                track?.asTrack?.artists?.get(0)?.name,track?.asTrack?.durationMs,track?.asTrack?.linkedTrack?.id,track?.asTrack?.previewUrl)
+                allTracksInfos.add(trackModel)
+            }
             tracksAdapter.notifyDataSetChanged()
 
         })
+        playPausePlaylist.setOnClickListener {
+            if(!playPausePlaylist.isChecked){
+                if(SpotifyActivity.exo.isPlaying) {
+                    SpotifyActivity.exo.pause()
+                }
+            }else{
+                Log.d("TAG", "onCreateView: in else"+playPausePlaylist.isChecked)
+                val intent=Intent()
+                intent.putExtra("playlist",allTracksInfos)
+                intent.setAction(RECIEVE_PLAYLIST)
+                LocalBroadcastManager.getInstance(this.requireContext()).sendBroadcast(intent)
+            }
+        }
         return view
 
     }
@@ -90,6 +123,7 @@ class PlaylistFragment : Fragment() {
         toolbar=view.findViewById(R.id.collapsing_toolbar)
         progress=view.findViewById(R.id.progress)
         playlistView=view.findViewById(R.id.playlist_activity)
+        playPausePlaylist=view.findViewById(R.id.playlist_pause_icon)
     }
 
 

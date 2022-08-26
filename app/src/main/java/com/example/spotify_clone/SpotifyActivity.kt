@@ -8,9 +8,12 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.media.MediaMetadataCompat
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.adamratzman.spotify.*
 import com.bumptech.glide.Glide
@@ -20,21 +23,57 @@ import com.example.spotify_clone.Fragment.SearchFragment
 import com.example.spotify_clone.Fragment.SearchSongFragment
 import com.example.spotify_clone.Models.ApiRelatedModels.TrackModel
 import com.example.spotify_clone.R.id.search_song_fragment
+import com.example.spotify_clone.ViewModels.SpotifyViewModel
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.MediaMetadata
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.extractor.mp4.Track
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.ui.PlayerControlView
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.cache.DefaultContentMetadata
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.grpc.Metadata
+import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
+import kotlin.time.seconds
 
 class SpotifyActivity : AppCompatActivity() {
 
     private lateinit var controllerSongName:TextView
     private lateinit var songThumb:ImageView
     private lateinit var songArtist:TextView
-    private lateinit var songState:ToggleButton
+    private lateinit var playPause:ToggleButton
     private lateinit var songProgress:ProgressBar
     private lateinit var bottomNavigationView:BottomNavigationView
+    private lateinit var viewModel:SpotifyViewModel
+    private lateinit var playerview:PlayerControlView
+    private var playlistTracks=ArrayList<TrackModel>(1)
     companion object{
         public lateinit var exo:ExoPlayer
+        public val TAG="tag"
         public val FRAG_RECIEVER="launchPlaylist"
+    }
+    private val listeners = object:Player.Listener{
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            Log.d(TAG, "onMediaItemTransition: ")
+            super.onMediaItemTransition(mediaItem, reason)
+            val pos=playerview.player?.currentMediaItemIndex
+            if(playlistTracks.size>0) {
+                Glide.with(songThumb).load(playlistTracks.get(pos!!).image).into(songThumb)
+                songArtist.text = playlistTracks.get(pos!!)?.artist
+                controllerSongName.text = playlistTracks.get(pos!!)?.name
+            }
+        }
+
+
+        override fun onEvents(player: Player, events: Player.Events) {
+            super.onEvents(player, events)
+
+
+
+        }
     }
 
     var fragReciever:BroadcastReceiver=object: BroadcastReceiver(){
@@ -60,17 +99,55 @@ class SpotifyActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val bundle=intent?.getBundleExtra("track")
             val track: TrackModel? =bundle?.getParcelable("track")
-            Glide.with(this@SpotifyActivity).load(track?.image).into(songThumb)
-            Log.d("TAG", "onReceive: track"+track)
-            controllerSongName.text=track?.name
-            songArtist.text=track?.artist
+            val action=bundle?.getString("clear_and_play")
+            exo.clearMediaItems()
+            playerview.player=exo
             exo.playWhenReady=true
-            val song=MediaItem.Builder().setUri(track?.previewUrl).build()
-            val song2=MediaItem.Builder().setUri("https://p.scdn.co/mp3-preview/f1266c8f300a0b5a08107834a41cd069d4fb36e1?cid=a7ade92373684af7b78d8382b1031827").build()
-            exo.addMediaItem(song)
-            exo.addMediaItem(song2)
-            exo.prepare()
+            justAddSong(track)
+
         }
+    }
+    var playlistReciever:BroadcastReceiver=object :BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            exo.clearMediaItems()
+            playlistTracks.clear()
+            playerview.player=exo
+            Log.d(TAG, "onReceive: playlist")
+            val trackLists=intent?.getParcelableArrayListExtra<TrackModel>("playlist")
+
+            trackLists?.forEach {
+                if(it.previewUrl!=null) {
+                    val song = MediaItem.Builder().setUri(it?.previewUrl).setTag("1").build()
+                    exo.addMediaItem(song)
+                    playlistTracks.add(it)
+                }
+            }
+            exo.prepare()
+            exo.playWhenReady=true
+            exo.seekToNext()
+            exo.play()
+        }
+
+    }
+
+    private fun justAddSong(track: TrackModel?) {
+        val song=MediaItem.Builder().setUri(track?.previewUrl).build()
+        exo.addMediaItem(song)
+//        exo.seekToNextMediaItem()
+        val totPercent=29000
+        val onpercent=(totPercent/100).toInt()
+        playerview.setProgressUpdateListener { position, bufferedPosition ->
+            Log.d(TAG, "justAddSong: "+totPercent)
+            val progress=(position/ onpercent!!).toInt()
+            songProgress.setProgress(progress,true)
+        }
+        Glide.with(songThumb).load(track?.image).into(songThumb)
+        songArtist.text=track?.artist
+        controllerSongName.text=track?.name
+        exo.prepare()
+        exo.playWhenReady=true
+        exo.play()
+        playPause.isChecked=true
 
     }
 
@@ -78,8 +155,16 @@ class SpotifyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spotify)
         initialise()
+
+        viewModel=ViewModelProvider(this).get(SpotifyViewModel::class.java)
+        exo.addListener(listeners)
         LocalBroadcastManager.getInstance(this).registerReceiver(fragReciever, IntentFilter(FRAG_RECIEVER))
         LocalBroadcastManager.getInstance(this).registerReceiver(trackReciever, IntentFilter("recieveTrack"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(playlistReciever, IntentFilter(PlaylistFragment.RECIEVE_PLAYLIST))
+
+
+
+
 
         val pos=bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){
@@ -99,6 +184,16 @@ class SpotifyActivity : AppCompatActivity() {
 
         val homeFragment=HomeFragment()
         supportFragmentManager.beginTransaction().replace(R.id.spotify_frame,homeFragment).addToBackStack(null).commit()
+        playPause.setOnClickListener {
+            if(!playPause.isChecked){
+                if(exo.isPlaying)
+                    exo.pause()
+            }else{
+                if(!exo.isPlaying)
+                    exo.play()
+            }
+        }
+
 
 
     }
@@ -110,6 +205,8 @@ class SpotifyActivity : AppCompatActivity() {
         songProgress = findViewById(R.id.song_progress)
         songProgress.progressTintList= ColorStateList.valueOf(Color.WHITE)
         bottomNavigationView=findViewById(R.id.bottomNavigationView)
+        playerview=findViewById(R.id.playerview)
+        playPause=findViewById(R.id.play_pause_song)
     }
 
 
@@ -119,4 +216,5 @@ class SpotifyActivity : AppCompatActivity() {
         else
             super.onBackPressed()
     }
+
 }

@@ -47,6 +47,7 @@ class DataRepository {
 
     private var genres: MutableLiveData<List<String>> = MutableLiveData()
     private var searchedTracks: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
+    private var nextSong: MutableLiveData<Track> = MutableLiveData()
 
     companion object {
 
@@ -357,7 +358,7 @@ class DataRepository {
             var thumb: Thumbnail
             var thumbnails = ArrayList<Thumbnail>(1)
             api.search.searchAlbum(newText.toString()).items.forEach {
-                thumb= Thumbnail(it.images.get(it.images.size - 1).url,it.name,it.type,it.id,searchedTracks,
+                thumb= Thumbnail(it.images.get(0).url,it.name,it.type,it.id,searchedTracks,
                     ""+it.artists.get(0)+""+it.artists.get(it.artists.size-1))
                 thumbnails.add(thumb)
             }
@@ -403,6 +404,16 @@ class DataRepository {
             searchedTracks.postValue(thumbnails)
         }
         return searchedTracks
+    }
+
+    fun fetchNextSong(linkedTrackId: String?): MutableLiveData<Track> {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            if (linkedTrackId != null) {
+                nextSong.postValue(api.tracks.getTrack(linkedTrackId)?.asTrack)
+            }
+        }
+        return nextSong
     }
 
 }

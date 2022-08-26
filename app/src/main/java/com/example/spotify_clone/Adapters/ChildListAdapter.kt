@@ -33,7 +33,7 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(allThumbs.get(position).type.equals("artist",true))
+        if(allThumbs.get(position).type.equals("artist"))
             return 1
         else
             return 0
@@ -62,7 +62,7 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
             Log.d("TAG", "onBindViewHolder: " + thumb.name)
             holder.artistsName.text = thumb.name
             holder.cover.setOnClickListener {
-                if(thumb.type.equals("playlist",true)){
+                if(thumb.type.equals("playlist")){
                     val intent= Intent()
                     intent.putExtra("id",thumb.next)
                     intent.putExtra("type","playlist")

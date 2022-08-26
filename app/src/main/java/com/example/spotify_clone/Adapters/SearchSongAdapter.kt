@@ -24,65 +24,69 @@ class SearchSongAdapter(val searchedResults: kotlin.collections.ArrayList<Thumbn
         Log.d("TAG", "onCreateViewHolder: searchSongViewHolder")
         layoutType=viewType
         Log.d("TAG", "onCreateViewHolder: viewType $viewType")
-//        when(viewType){
+        when(viewType){
 
-//            layout.playlist.ordinal -> {
-//                val view=LayoutInflater.from(parent.context).inflate(R.layout.search_playlist_thumbnail_layout,parent,false)
-//                return playlistHolder(view)
-//            }
-//            layout.album.ordinal -> {
-//                val view=LayoutInflater.from(parent.context).inflate(R.layout.search_album_thumbnail_layout,parent,false)
-//                return albumHolder(view)
-//            }
-//            layout.artist.ordinal -> {
-//                val view=LayoutInflater.from(parent.context).inflate(R.layout.search_artist_thumbnail_layout,parent,false)
-//                return artistHolder(view)
-//            }
-//            else -> {
+            layout.playlist.ordinal -> {
+                val view=LayoutInflater.from(parent.context).inflate(R.layout.search_playlist_thumbnail_layout,parent,false)
+                return playlistHolder(view)
+            }
+            layout.album.ordinal -> {
+                val view=LayoutInflater.from(parent.context).inflate(R.layout.search_album_thumbnail_layout,parent,false)
+                return albumHolder(view)
+            }
+            layout.artist.ordinal -> {
+                val view=LayoutInflater.from(parent.context).inflate(R.layout.search_artist_thumbnail_layout,parent,false)
+                return artistHolder(view)
+            }
+            layout.track.ordinal -> {
                 val view=LayoutInflater.from(parent.context).inflate(R.layout.track_layout,parent,false)
                 return trackHolder(view)
-//            }
-//        }
+            }
+            else -> {
+                val view=LayoutInflater.from(parent.context).inflate(R.layout.track_layout,parent,false)
+                return trackHolder(view)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val thumb=searchedResults?.get(position)
-//        when(layoutType){
-//            layout.track.ordinal -> {
+
+            if(thumb.type=="track") {
                     val holder = holder as trackHolder
                     Glide.with(holder.songCover).load(thumb.imageUrl).override(50,50).placeholder(R.drawable.sample_artist).into(holder.songCover)
                     holder.songName.text = thumb.name
                     holder.songArtist.text = thumb.title
 
-//            }
-//            layout.artist.ordinal -> {
-//                val holder = holder as artistHolder
-//                Glide.with(holder.artistCover).load(thumb.imageUrl).into(holder.artistCover)
-//                holder.artistName.text=thumb.name
-//            }
-//            layout.album.ordinal -> {
-////                val holder = holder as albumHolder
-////                Glide.with(holder.albumCover).load(thumb.imageUrl).into(holder.albumCover)
-////                holder.albumName.text=thumb.name
-////                holder.albumArtists.text=thumb.title
-//            }
-//            layout.playlist.ordinal -> {
-//                val holder = holder as playlistHolder
-//                Glide.with(holder.playlistCover).load(thumb.imageUrl).into(holder.playlistCover)
-//                holder.playlistName.text=thumb.name
-//            }
-//        }
+            }
+            else if(thumb.type=="artist") {
+                val holder = holder as artistHolder
+                Glide.with(holder.artistCover).load(thumb.imageUrl).into(holder.artistCover)
+                holder.artistName.text=thumb.name
+            }
+            else if(thumb.type=="album") {
+                val holder = holder as albumHolder
+                Glide.with(holder.albumCover).load(thumb.imageUrl).into(holder.albumCover)
+                holder.albumName.text=thumb.name
+                holder.albumArtists.text=thumb.title
+            }
+            else if(thumb.type=="playlist") {
+                val holder = holder as playlistHolder
+                Glide.with(holder.playlistCover).load(thumb.imageUrl).into(holder.playlistCover)
+                holder.playlistName.text=thumb.name
+            }
+
     }
 
     override fun getItemViewType(position: Int): Int {
-        return 2
-//        when(searchedResults.get(position).type){
-//            "track" -> return layout.track.ordinal
-//            "playlist" -> return layout.playlist.ordinal
-//            "album" -> return layout.album.ordinal
-//            "artist" -> return layout.artist.ordinal
-//            else -> return -1
-//        }
+
+        when(searchedResults.get(position).type){
+            "track" -> return layout.track.ordinal
+            "playlist" -> return layout.playlist.ordinal
+            "album" -> return layout.album.ordinal
+            "artist" -> return layout.artist.ordinal
+            else -> return -1
+        }
     }
 
     override fun getItemCount(): Int {
@@ -93,18 +97,18 @@ class SearchSongAdapter(val searchedResults: kotlin.collections.ArrayList<Thumbn
         var songName:TextView=view.findViewById(R.id.song_name)
         var songArtist:TextView=view.findViewById(R.id.artists)
     }
-//    inner class albumHolder(view: View) : RecyclerView.ViewHolder(view){
-//        var albumCover:ImageView=view.findViewById(R.id.cover_image)
-//        var albumName:TextView=view.findViewById(R.id.album_name)
-//        var albumArtists:TextView=view.findViewById(R.id.album_artist_name)
-//    }
-//    inner class artistHolder(view: View) : RecyclerView.ViewHolder(view){
-//        var artistCover:ImageView=view.findViewById(R.id.cover_image)
-//        var artistName:TextView=view.findViewById(R.id.artist_name)
-//    }
-//    inner class playlistHolder(view: View) : RecyclerView.ViewHolder(view){
-//        var playlistCover:ImageView=view.findViewById(R.id.cover_image)
-//        var playlistName:TextView=view.findViewById(R.id.playlist_name)
-//    }
+    inner class albumHolder(view: View) : RecyclerView.ViewHolder(view){
+        var albumCover:ImageView=view.findViewById(R.id.cover_image)
+        var albumName:TextView=view.findViewById(R.id.album_name)
+        var albumArtists:TextView=view.findViewById(R.id.album_artist_name)
+    }
+    inner class artistHolder(view: View) : RecyclerView.ViewHolder(view){
+        var artistCover:ImageView=view.findViewById(R.id.cover_image)
+        var artistName:TextView=view.findViewById(R.id.artist_name)
+    }
+    inner class playlistHolder(view: View) : RecyclerView.ViewHolder(view){
+        var playlistCover:ImageView=view.findViewById(R.id.cover_image)
+        var playlistName:TextView=view.findViewById(R.id.playlist_name)
+    }
 
 }
