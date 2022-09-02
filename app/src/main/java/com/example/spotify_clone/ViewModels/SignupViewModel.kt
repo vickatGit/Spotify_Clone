@@ -35,19 +35,12 @@ class SignupViewModel() : ViewModel() {
   fun setPassword(password: String) { this.password=password }
   fun setGender(gender: String) { this.gender=gender }
 
-  suspend fun createUser() {
+  fun createUser(): MutableLiveData<UserModel> {
 
     val hashedPassword:String=BCrypt.withDefaults().hashToString(6,password.toCharArray())
     val user=UserModel(email,hashedPassword, Timestamp(Date(birthYear.toInt(),birthMonth.toInt(),birthDay.toInt())),gender,username,null)
-    repo.createUser(user)
-//        delay(2000)
-    GetUser()
+    return repo.createUser(user)
 
-  }
-  fun GetUser(): MutableLiveData<UserModel?> {
-
-    this.isUserCreated.postValue(repo.GetUser())
-    return isUserCreated
   }
 
   fun setUsername(username: String) {
@@ -58,17 +51,9 @@ class SignupViewModel() : ViewModel() {
     return isUserCreated
   }
 
-  suspend fun isEmailAlreadyExist(email: String) {
-    repo.isEmailAlreadyExist(email)
-//        delay(1000)
-    emailIsExistOrNot.postValue(repo.GetIsEmailExists())
-//<<<<<<< HEAD
-//=======
-    //url = git@github.com:vickatGit/Spotify_Clone.git
-//>>>>>>> e04c1ed (conflicts removed)
-  }
-  fun GetEmailExists(): MutableLiveData<Boolean?> {
-    return emailIsExistOrNot
+  fun isEmailAlreadyExist(email: String): MutableLiveData<Boolean> {
+    return repo.isEmailAlreadyExist(email)
+
   }
 
 

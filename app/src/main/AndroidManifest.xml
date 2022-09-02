@@ -11,12 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpotifyClone">
+        <service
+            android:name=".MusicService.MusicPlayerService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <activity
             android:name=".SpotifyActivity"
-            android:windowSoftInputMode="adjustNothing"
+            android:exported="false"
             android:hardwareAccelerated="true"
-            android:exported="false"></activity>
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -35,6 +39,17 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <receiver android:name=".MusicService.NotificationService.NotificationRecieverService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <action android:name="play_pause_song"/>
+                <action android:name="seek_to_next_song"/>
+                <action android:name="seek_to_previous_song"/>
+
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

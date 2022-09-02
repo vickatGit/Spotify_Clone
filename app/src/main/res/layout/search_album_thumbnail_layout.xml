@@ -22,7 +22,7 @@
         android:maxLines="2"
         android:layout_marginStart="5dp"
         android:ellipsize="end"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textColor="@color/secondaryTextColor"
         android:textStyle="bold"
         android:text="laurin bream,"
@@ -38,7 +38,7 @@
         android:maxWidth="130dp"
         android:maxLines="2"
         android:text="laurin bream,"
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:textStyle="bold"
 
         app:layout_constraintEnd_toEndOf="@+id/cover_image"

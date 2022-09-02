@@ -26,16 +26,18 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel:HomeFragmentViewModel
     private lateinit var allListsRecyclerView:RecyclerView
     private lateinit var topScroller:ScrollView
+    @Volatile
     private lateinit var allLists:ArrayList<List<Thumbnail>>
     private lateinit var allListAdapter: ParentClassAdapter
 
     companion object{
-        private val TAG="tag"
+        private val TAG="home_fragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: lifecycle")
+        retainInstance=true
         viewModel=ViewModelProvider(this.requireActivity()).get(HomeFragmentViewModel::class.java)
     }
 
@@ -62,6 +64,11 @@ class HomeFragment : Fragment() {
             }
         })
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView: ")
     }
 
     override fun onAttach(activity: Activity) {
@@ -95,8 +102,8 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        Log.d(TAG, "onDestroy: lifecycle")
         super.onDestroy()
+        Log.d(TAG, "onDestroy: lifecycle")
     }
 
     override fun onDetach() {

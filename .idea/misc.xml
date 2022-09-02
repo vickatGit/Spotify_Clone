@@ -17,6 +17,7 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/like.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/like_toggle_bg.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/next_button_bg.xml" value="0.15885416666666666" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/pause_black_icon.xml" value="0.2" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/pause_icon.xml" value="0.1" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/play_icon.xml" value="0.1" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/play_pause_drawable.xml" value="0.2890625" />
@@ -27,6 +28,7 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/song_like.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/spotify_signup_intro_bg.xml" value="0.2890625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/drawable/unliked.xml" value="0.2890625" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout-land/activity_spotify.xml" value="0.16" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_javaactivity.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_login.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_main.xml" value="0.2678396871945259" />
@@ -34,8 +36,10 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up_login.xml" value="0.14270833333333333" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_spotify.xml" value="0.25" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/album_track_layout.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/artist_layout.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/dummy_layout.xml" value="0.25" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_album.xml" value="0.2526041666666667" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_home.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_playlist.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search.xml" value="0.27291666666666664" />

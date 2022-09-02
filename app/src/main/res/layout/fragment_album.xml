@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragment.PlaylistFragment">
+    tools:context=".Fragment.AlbumFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/playlist_activity"
+            android:id="@+id/album_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible"
@@ -54,7 +54,7 @@
 
 
                     <ImageView
-                        android:id="@+id/playlist_thumbnail"
+                        android:id="@+id/album_thumbnail"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="40dp"
@@ -66,7 +66,7 @@
 
 
                     <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/playlist_toolbar"
+                        android:id="@+id/album_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
                         android:overScrollMode="always"
@@ -83,10 +83,14 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/playlist_description"
+                        android:id="@+id/album_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:textSize="23sp"
+                        android:textColor="@color/secondaryTextColor"
+                        android:textStyle="bold"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
                         android:text="Get happy with today's does of feel-good songs"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -110,7 +114,7 @@
                         android:textSize="16sp"
                         android:textColor="@color/secondaryTextColor"
                         app:layout_constraintStart_toEndOf="@+id/imageView3"
-                        app:layout_constraintTop_toBottomOf="@+id/playlist_description" />
+                        app:layout_constraintTop_toBottomOf="@+id/album_description" />
 
                     <ToggleButton
                         android:id="@+id/like_btn"
@@ -137,18 +141,18 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
-<!--            <androidx.core.widget.NestedScrollView-->
-<!--                android:layout_width="match_parent"-->
+            <!--            <androidx.core.widget.NestedScrollView-->
+            <!--                android:layout_width="match_parent"-->
 
 
-<!--                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"-->
-<!--                android:layout_height="wrap_content">-->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:orientation="vertical"-->
-<!--                android:layout_height="match_parent">-->
+            <!--                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"-->
+            <!--                android:layout_height="wrap_content">-->
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:orientation="vertical"-->
+            <!--                android:layout_height="match_parent">-->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/all_tracks"
+                android:id="@+id/album_all_tracks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -158,14 +162,14 @@
                 android:layout_marginTop="30dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/playlist_activity" />
-<!--            </LinearLayout>-->
-<!--            </androidx.core.widget.NestedScrollView>-->
+            <!--            </LinearLayout>-->
+            <!--            </androidx.core.widget.NestedScrollView>-->
             <ToggleButton
-                android:id="@+id/playlist_pause_icon"
+                android:id="@+id/album_pause_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:textOn=""
-                android:textOff=" "
+                android:textOff=""
                 android:buttonTint="@color/white"
                 android:backgroundTint="@color/spotifyThemeColor"
                 app:layout_anchor="@id/app_bar_layout"
@@ -173,19 +177,7 @@
                 app:layout_anchorGravity="end|bottom"
                 android:background="@drawable/round_play_pause_toggle_button" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </FrameLayout>

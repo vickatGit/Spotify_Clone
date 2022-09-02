@@ -1,5 +1,6 @@
 package com.example.spotify_clone.Fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -51,17 +52,23 @@ class PlaylistFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance=true
+        Log.d(TAG, "onCreate: ")
         this.id= arguments?.getString("id").toString()
         this.type= arguments?.getString("type").toString()
+        Log.d("TAG", "onCreate: search $id and ")
 
     }
     companion object{
         val RECIEVE_PLAYLIST: String="recieve_playlist"
+        val TAG="playlist_fragment"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        Log.d(TAG, "onCreateView: ")
+
         val view=inflater.inflate(R.layout.fragment_playlist, container, false)
         initialiseViews(view)
         ViewCompat.setNestedScrollingEnabled(allTrackesRecycler,false)
@@ -105,6 +112,7 @@ class PlaylistFragment : Fragment() {
                 val intent=Intent()
                 intent.putExtra("playlist",allTracksInfos)
                 intent.setAction(RECIEVE_PLAYLIST)
+
                 LocalBroadcastManager.getInstance(this.requireContext()).sendBroadcast(intent)
             }
         }
@@ -113,6 +121,7 @@ class PlaylistFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewCreated: ")
         super.onViewCreated(view, savedInstanceState)
 
     }
@@ -126,5 +135,49 @@ class PlaylistFragment : Fragment() {
         playPausePlaylist=view.findViewById(R.id.playlist_pause_icon)
     }
 
+    override fun onAttach(context: Context) {
+        Log.d(TAG, "onAttach: ")
+        super.onAttach(context)
+    }
 
+    override fun onStart() {
+        Log.d(TAG, "onStart: ")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d(TAG, "onResume: ")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d(TAG, "onPause: ")
+        super.onPause()
+
+    }
+
+    override fun onStop() {
+        Log.d(TAG, "onStop: ")
+        super.onStop()
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewStateRestored: ")
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: ")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d(TAG, "onDetach: ")
+        super.onDetach()
+    }
+
+    override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView: ")
+        super.onDestroyView()
+    }
 }

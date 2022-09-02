@@ -103,7 +103,7 @@ class SignUpActivity : AppCompatActivity() {
         passNext.setBackgroundDrawable(ContextCompat.getDrawable(this,R.drawable.next_button_error_bg))
       }
     }
-    viewModel.GetEmailExists().observe(this, Observer {
+    viewModel.isEmailAlreadyExist(input.text.toString()).observe(this, Observer {
       if(it==false) {
         viewModel.setEmail(input.text.toString())
         setCurrentPosition(1)
@@ -113,9 +113,9 @@ class SignUpActivity : AppCompatActivity() {
       }
     })
     next.setOnClickListener {
-      CoroutineScope(Dispatchers.IO).launch {
+//      CoroutineScope(Dispatchers.IO).launch {
         viewModel.isEmailAlreadyExist(input.text.toString())
-      }
+//      }
     }
     passNext.setOnClickListener {
       setCurrentPosition(2)
@@ -143,22 +143,19 @@ class SignUpActivity : AppCompatActivity() {
     createAccount.setOnClickListener {
       viewModel.setUsername(usernameInput.text.toString())
       CoroutineScope(Dispatchers.IO).launch {
-        viewModel.createUser()
+        viewModel.createUser().observe(this@SignUpActivity, Observer {
+          Log.d("TAG", "onCreate: observer"+it)
+          if(it!=null){
+            val bundle=Bundle()
+            val intent=Intent(this@SignUpActivity,SpotifyActivity::class.java)
+            bundle.putParcelable(LoginActivity.USER,it)
+            intent.putExtra(LoginActivity.USER,bundle)
+            startActivity(intent)
+            UserLoginSignUpDatabase.getInstance(this@SignUpActivity)?.getUserLoginDao()?.insertUser(SqlUserEntity(null,it.username,it.userRef!!))
+          }
+        })
       }
-      Log.d("TAG", "onCreate: viewmodel GetUser"+viewModel.GetUser())
     }
-    viewModel.GetUser().observe(this, Observer {
-      Log.d("TAG", "onCreate: observer"+it)
-      if(it!=null){
-        val bundle=Bundle()
-        val intent=Intent(this,SpotifyActivity::class.java)
-        bundle.putParcelable(LoginActivity.USER,it)
-        intent.putExtra(LoginActivity.USER,bundle)
-        startActivity(intent)
-        UserLoginSignUpDatabase.getInstance(this)?.getUserLoginDao()?.insertUser(SqlUserEntity(null,it.username,it.userRef!!))
-
-      }
-    })
   }
 
 

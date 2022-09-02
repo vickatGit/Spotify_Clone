@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="3"
+                android:orientation="vertical"
+
+                app:backgroundTint="@android:color/transparent"
+                app:itemBackground="@android:color/transparent"
+                app:layout_constraintBottom_toTopOf="@+id/spotify_controller_card"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/navigation_menu" />
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/spotify_controller_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                app:cardCornerRadius="13dp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:background="@android:color/darker_gray">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/song_controller_thumbnail_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="7dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/song_controller_thumbnail"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:scaleType="centerCrop"
+
+                            android:src="@drawable/sample_artist" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/song_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="10dp"
+                        android:ellipsize="marquee"
+                        android:lines="1"
+                        android:text="Love again"
+                        android:textColor="@color/secondaryTextColor"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/like_btn"
+                        app:layout_constraintStart_toEndOf="@+id/song_controller_thumbnail_card"
+                        app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
+
+                    <TextView
+                        android:id="@+id/song_artist"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:ellipsize="marquee"
+                        android:lines="1"
+                        android:text="Dua Lipa"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toStartOf="@+id/like_btn"
+                        app:layout_constraintStart_toEndOf="@+id/song_controller_thumbnail_card"
+                        app:layout_constraintTop_toBottomOf="@+id/song_name" />
+
+                    <ToggleButton
+                        android:id="@+id/like_btn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginEnd="13dp"
+                        android:background="@drawable/like_toggle_bg"
+                        android:buttonTint="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        app:layout_constraintBottom_toBottomOf="@+id/song_controller_thumbnail_card"
+                        app:layout_constraintEnd_toStartOf="@+id/play_pause_song"
+                        app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
+
+                    <ToggleButton
+                        android:id="@+id/play_pause_song"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="13dp"
+                        android:background="@drawable/play_pause_drawable"
+                        android:buttonTint="@color/white"
+                        android:textOff=""
+                        android:textOn=""
+                        app:layout_constraintBottom_toBottomOf="@+id/song_controller_thumbnail_card"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ProgressBar
+                    android:id="@+id/song_progress"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+
+                    android:indeterminateTint="@color/white" />
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.exoplayer2.ui.PlayerControlView
+                android:id="@+id/playerview"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:elevation="50dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:show_timeout="0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <FrameLayout
+        android:id="@+id/spotify_frame"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

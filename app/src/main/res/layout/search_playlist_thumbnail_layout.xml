@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginTop="13dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -22,7 +23,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:ellipsize="end"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textColor="@color/secondaryTextColor"
         android:textStyle="bold"
         android:text="laurin bream,"

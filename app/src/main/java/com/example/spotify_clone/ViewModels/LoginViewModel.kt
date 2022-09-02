@@ -16,16 +16,9 @@ class LoginViewModel : ViewModel() {
   init {
     repo= DataRepository.getInstance()
   }
-  suspend fun isUserExist(email: String, password: String) {
-    repo.isUserExist(email, password)
-//        delay(3000)
-    isUser.postValue(repo.GetUser())
-    Log.d("TAG", "isUserExist: "+repo.GetUser().toString())
-
-
+  fun isUserExist(email: String, password: String): MutableLiveData<UserModel> {
+    return repo.isUserExist(email, password)
   }
 
-  fun getUser(): MutableLiveData<UserModel> {
-    return isUser
-  }
+
 }

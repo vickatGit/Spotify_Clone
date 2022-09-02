@@ -55,22 +55,22 @@ class LoginActivity : AppCompatActivity() {
     }
     login.setOnClickListener {
       CoroutineScope(Dispatchers.IO).launch {
-        viewModel.isUserExist(email.text.toString(), password.text.toString())
+        viewModel.isUserExist(email.text.toString(), password.text.toString()).observe(this@LoginActivity, Observer {
+          if(it!=null){
+            val bundle=Bundle()
+            val intent=Intent(this@LoginActivity,SpotifyActivity::class.java)
+            bundle.putParcelable(USER,it)
+            intent.putExtra(USER,bundle)
+            startActivity(intent)
+            UserLoginSignUpDatabase.getInstance(this@LoginActivity)?.getUserLoginDao()?.insertUser(SqlUserEntity(null,it.username,it.userRef!!))
+            acknowledgement.visibility= View.INVISIBLE
+          }else{
+            acknowledgement.visibility= View.VISIBLE
+          }
+        })
       }
     }
-    viewModel.getUser().observe(this, Observer {
-      if(it!=null){
-        val bundle=Bundle()
-        val intent=Intent(this,SpotifyActivity::class.java)
-        bundle.putParcelable(USER,it)
-        intent.putExtra(USER,bundle)
-        startActivity(intent)
-        UserLoginSignUpDatabase.getInstance(this)?.getUserLoginDao()?.insertUser(SqlUserEntity(null,it.username,it.userRef!!))
-        acknowledgement.visibility= View.INVISIBLE
-      }else{
-        acknowledgement.visibility= View.VISIBLE
-      }
-    })
+
   }
 
   private fun initialiseViews() {

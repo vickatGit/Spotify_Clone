@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.adamratzman.spotify.models.PlaylistTrack
 import com.bumptech.glide.Glide
+import com.example.spotify_clone.Fragment.PlaylistFragment
 import com.example.spotify_clone.Models.ApiRelatedModels.TrackModel
 import com.example.spotify_clone.R
 import com.example.spotify_clone.SpotifyActivity
@@ -42,10 +44,10 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
             Log.d("TAG", "track name: " + track?.name + "and album name is" + track?.album?.name)
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putString("SongAction","clear_and_play")
-            bundle.putParcelable("track", trackInfo)
-            intent.putExtra("track", bundle)
-            intent.setAction("recieveTrack")
+//            bundle.putString("SongAction","clear_and_play")
+            bundle.putInt("curpos",position)
+            intent.putExtra("track", trackInfo)
+            intent.setAction(PlaylistFragment.RECIEVE_PLAYLIST)
             LocalBroadcastManager.getInstance(holder.song.context).sendBroadcast(intent)
         }
     }
@@ -59,6 +61,7 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
         var songThumbnail: ImageView=view.findViewById(R.id.song_thumbnail)
         var songName: TextView=view.findViewById(R.id.song_name)
         var songArtists: TextView=view.findViewById(R.id.artists)
+        var isUsersFavourite:ToggleButton=view.findViewById(R.id.is_favourite)
         var song:View=view
 
 

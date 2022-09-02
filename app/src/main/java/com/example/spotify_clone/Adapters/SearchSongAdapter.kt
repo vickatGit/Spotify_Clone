@@ -1,18 +1,17 @@
 package com.example.spotify_clone.Adapters
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.spotify_clone.R
 import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class SearchSongAdapter(val searchedResults: kotlin.collections.ArrayList<Thumbnail>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -63,18 +62,37 @@ class SearchSongAdapter(val searchedResults: kotlin.collections.ArrayList<Thumbn
                 val holder = holder as artistHolder
                 Glide.with(holder.artistCover).load(thumb.imageUrl).into(holder.artistCover)
                 holder.artistName.text=thumb.name
+                holder.view.setOnClickListener {
+                    LocalBroadcastManager.getInstance(holder.view.context).sendBroadcast(sendFragmentRequest(thumb))
+                }
             }
             else if(thumb.type=="album") {
                 val holder = holder as albumHolder
                 Glide.with(holder.albumCover).load(thumb.imageUrl).into(holder.albumCover)
                 holder.albumName.text=thumb.name
                 holder.albumArtists.text=thumb.title
+                holder.view.setOnClickListener {
+                    LocalBroadcastManager.getInstance(holder.view.context).sendBroadcast(sendFragmentRequest(thumb))
+                }
             }
             else if(thumb.type=="playlist") {
                 val holder = holder as playlistHolder
                 Glide.with(holder.playlistCover).load(thumb.imageUrl).into(holder.playlistCover)
                 holder.playlistName.text=thumb.name
+                sendFragmentRequest(thumb)
+                holder.view.setOnClickListener {
+                    LocalBroadcastManager.getInstance(holder.view.context).sendBroadcast(sendFragmentRequest(thumb))
+                }
             }
+
+    }
+    private fun sendFragmentRequest(thumb: Thumbnail): Intent {
+        var intent= Intent()
+        intent.putExtra("id",thumb.next)
+        intent.putExtra("type",thumb.type)
+        intent.setAction("launchPlaylist")
+        return intent
+
 
     }
 
@@ -96,19 +114,23 @@ class SearchSongAdapter(val searchedResults: kotlin.collections.ArrayList<Thumbn
         var songCover: ImageView=view.findViewById(R.id.song_thumbnail)
         var songName:TextView=view.findViewById(R.id.song_name)
         var songArtist:TextView=view.findViewById(R.id.artists)
+        var view:View=view
     }
     inner class albumHolder(view: View) : RecyclerView.ViewHolder(view){
         var albumCover:ImageView=view.findViewById(R.id.cover_image)
         var albumName:TextView=view.findViewById(R.id.album_name)
         var albumArtists:TextView=view.findViewById(R.id.album_artist_name)
+        var view:View=view
     }
     inner class artistHolder(view: View) : RecyclerView.ViewHolder(view){
         var artistCover:ImageView=view.findViewById(R.id.cover_image)
         var artistName:TextView=view.findViewById(R.id.artist_name)
+        var view:View=view
     }
     inner class playlistHolder(view: View) : RecyclerView.ViewHolder(view){
         var playlistCover:ImageView=view.findViewById(R.id.cover_image)
         var playlistName:TextView=view.findViewById(R.id.playlist_name)
+        var view:View=view
     }
 
 }

@@ -67,9 +67,14 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
                     intent.putExtra("id",thumb.next)
                     intent.putExtra("type","playlist")
                     intent.setAction("launchPlaylist")
-
                     LocalBroadcastManager.getInstance(requireActivity).sendBroadcast(intent)
-
+                }
+                else if(thumb.type.equals("album")){
+                    val intent= Intent()
+                    intent.putExtra("id",thumb.next)
+                    intent.putExtra("type","album")
+                    intent.setAction("launchPlaylist")
+                    LocalBroadcastManager.getInstance(requireActivity).sendBroadcast(intent)
                 }
             }
         }
