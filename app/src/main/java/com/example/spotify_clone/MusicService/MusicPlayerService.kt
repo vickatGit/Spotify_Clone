@@ -123,9 +123,10 @@ class MusicPlayerService : Service() {
             showNotification(R.drawable.play_icon)
         }
     }
-    fun addAllSOngsAndPlay(mediaList: ArrayList<MediaItem>) {
+    fun addAllSOngsAndPlay(mediaList: ArrayList<MediaItem>, songPosition: Int) {
         initPlayer()
         exo.setMediaItems(mediaList)
+        exo.seekTo(songPosition,0)
         exo.prepare()
         exo.playWhenReady=true
         exo.play()
@@ -139,7 +140,7 @@ class MusicPlayerService : Service() {
             Log.d(SpotifyActivity.TAG, "onMediaItemTransition: ")
             super.onMediaItemTransition(mediaItem, reason)
             pos= exo.nextMediaItemIndex-1
-//            SpotifyActivity.currentSong=SpotifyActivity.playlistTracks.get(pos)
+            SpotifyActivity.currentSong=SpotifyActivity.playlistTracks.get(pos)
             Log.d("TAG", "onMediaItemTransition: ${exo.nextMediaItemIndex-1}")
             if(SpotifyActivity.playlistTracks.size>0) {
                 image=BitmapFactory.decodeResource(resources,R.drawable.spotify_logo)
@@ -228,5 +229,10 @@ class MusicPlayerService : Service() {
 
 
 
+    }
+
+    fun seekToThisPosition(songPosition: Int) {
+        exo.seekTo(songPosition,0)
+        play()
     }
 }

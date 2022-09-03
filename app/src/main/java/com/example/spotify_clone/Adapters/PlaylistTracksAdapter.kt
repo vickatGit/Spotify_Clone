@@ -45,9 +45,10 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
             val intent = Intent()
             val bundle = Bundle()
 //            bundle.putString("SongAction","clear_and_play")
-            bundle.putInt("curpos",position)
-            intent.putExtra("track", trackInfo)
-            intent.setAction(PlaylistFragment.RECIEVE_PLAYLIST)
+            intent.putExtra("song_position",position)
+            intent.putExtra("song_id",trackInfo.id)
+            intent.putExtra("track", PlaylistFragment.allTracksInfos)
+            intent.setAction(PlaylistFragment.ADD_SONG)
             LocalBroadcastManager.getInstance(holder.song.context).sendBroadcast(intent)
         }
     }

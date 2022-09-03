@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.MultiAutoCompleteTextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.adamratzman.spotify.endpoints.pub.TrackAttribute
 import com.adamratzman.spotify.endpoints.pub.TuneableTrackAttribute
 import com.adamratzman.spotify.models.*
@@ -85,8 +86,7 @@ class DataRepository {
 
     fun createUser(user: UserModel): MutableLiveData<UserModel> {
 
-
-        val docRef = db.collection("Users").document()
+        val docRef = db.collection("Users").document().id
         user.setuserReference(docRef.toString())
         db.collection("Users").document(docRef.toString()).set(user).addOnCompleteListener {
             if (it.isSuccessful) {
@@ -111,7 +111,11 @@ class DataRepository {
                             some?.get("gender").toString(),
                             some?.get("username").toString(),
                             some?.getString("userRef"))
-                        isUserExist.postValue(user)
+                        val isUser=BCrypt.verifyer().verify(password.toCharArray(), user!!.password)
+                        if(isUser.verified)
+                            isUserExist.postValue(user)
+                        else
+                            isUserExist.postValue(null)
                     }
                 }
             }
@@ -142,6 +146,8 @@ class DataRepository {
                 if (it.isSuccessful) {
                     if (it.result.size() == 0) {
                         isEmailExist.postValue(false)
+                    }else{
+                        isEmailExist.postValue(true)
                     }
                 }
             }

@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
       }
     }
     login.setOnClickListener {
-      CoroutineScope(Dispatchers.IO).launch {
+
         viewModel.isUserExist(email.text.toString(), password.text.toString()).observe(this@LoginActivity, Observer {
           if(it!=null){
             val bundle=Bundle()
@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
             acknowledgement.visibility= View.VISIBLE
           }
         })
-      }
+
     }
 
   }

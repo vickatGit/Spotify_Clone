@@ -46,7 +46,7 @@ class PlaylistFragment : Fragment() {
     private lateinit var playPausePlaylist:ToggleButton
     private lateinit var tracksAdapter: PlaylistTracksAdapter
     private var allTracks= ArrayList<PlaylistTrack>()
-    private var allTracksInfos= ArrayList<TrackModel>()
+
     private lateinit var progress: ProgressBar
     private lateinit var playlistView: CoordinatorLayout
 
@@ -60,8 +60,10 @@ class PlaylistFragment : Fragment() {
 
     }
     companion object{
+        var allTracksInfos= ArrayList<TrackModel>()
         val RECIEVE_PLAYLIST: String="recieve_playlist"
         val TAG="playlist_fragment"
+        val ADD_SONG="add_song"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -103,18 +105,16 @@ class PlaylistFragment : Fragment() {
 
         })
         playPausePlaylist.setOnClickListener {
+            val intent=Intent()
+            intent.setAction(RECIEVE_PLAYLIST)
             if(!playPausePlaylist.isChecked){
-                if(SpotifyActivity.exo.isPlaying) {
-                    SpotifyActivity.exo.pause()
-                }
-            }else{
-                Log.d("TAG", "onCreateView: in else"+playPausePlaylist.isChecked)
-                val intent=Intent()
-                intent.putExtra("playlist",allTracksInfos)
-                intent.setAction(RECIEVE_PLAYLIST)
-
-                LocalBroadcastManager.getInstance(this.requireContext()).sendBroadcast(intent)
+                intent.putExtra("action","pause")
             }
+            else{
+                Log.d("TAG", "onCreateView: in else"+playPausePlaylist.isChecked)
+                intent.putExtra("playlist",allTracksInfos)
+            }
+                LocalBroadcastManager.getInstance(this.requireContext()).sendBroadcast(intent)
         }
         return view
 

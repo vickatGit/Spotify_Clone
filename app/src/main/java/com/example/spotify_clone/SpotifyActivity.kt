@@ -19,7 +19,6 @@ import com.example.spotify_clone.MusicService.MusicPlayerService
 import com.example.spotify_clone.ViewModels.SpotifyViewModel
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -43,7 +42,7 @@ class SpotifyActivity : AppCompatActivity() {
         val CURRENT_SONG_Duration="current_song_duaration"
         val SET_CURRENT_SONG_INFORMATION="update_song_info"
         val CURRENT_SONG_POSITION="current_song_position"
-        var playlistTracks=ArrayList<TrackModel>(1)
+        var playlistTracks=ArrayList<TrackModel>(0)
         public lateinit var exo:ExoPlayer
         public val TAG="tag"
         public val FRAG_RECIEVER="launchPlaylist"
@@ -68,6 +67,28 @@ class SpotifyActivity : AppCompatActivity() {
     var removeFragHistory:BroadcastReceiver=object :BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             viewModel.popFragmentHistoty()
+        }
+
+    }
+    var SongReciever:BroadcastReceiver=object:BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            var songPosition=intent?.getIntExtra("song_position",0)
+            var tracks=intent?.getParcelableArrayListExtra<TrackModel>("track")
+            var songId=intent?.getStringExtra("song_id")
+            if(playlistTracks.size!=0) {
+                val isExist= playlistTracks.indexOfFirst { it.id==songId }
+                if (isExist!=-1) {
+                    musicServiceConnection.seekToThisPosition(isExist)
+                    Log.d("song_reciever", "onReceive: in if 1")
+                } else {
+                    addSongsAndPlay(tracks, songPosition!!)
+                    Log.d("song_reciever", "onReceive: in else 1")
+                }
+            }else {
+                addSongsAndPlay(tracks, songPosition!!)
+                Log.d("song_reciever", "onReceive: in else 2")
+            }
+
         }
 
     }
@@ -145,24 +166,47 @@ class SpotifyActivity : AppCompatActivity() {
 
     var playlistReciever:BroadcastReceiver=object :BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
-//            initPlayer()
-//            val curpos=intent?.getIntExtra("curpos",0)
-            playlistTracks.clear()
+            Log.d(TAG, "onReceive: current song"+ currentSong)
             val playlist=intent?.getParcelableArrayListExtra<TrackModel>("playlist")
-            val mediaList=ArrayList<MediaItem>(1)
-            playlist?.forEach {
-                if(it.previewUrl!=null) {
-                    mediaList.add(MediaItem.fromUri(it.previewUrl!!))
-                    playlistTracks.add(it)
+            val action=intent?.getStringExtra("action")
+            if(action!=null){
+                var isExist:Int?=null
+                if(currentSong!=null)
+                    isExist = playlistTracks?.indexOfFirst { it.id == currentSong?.id }
+                if(isExist!=-1) {
+                    musicServiceConnection.pause()
+                    Log.d("playlistFragment", "onReceive: pausing music")
                 }
-                viewModel.setPlaylistTracks(playlistTracks)
+            }else{//if action is null then playlist cannot be null  and vice versa
+                Log.d("playlistFragment", "onReceive: inelse")
+                var isExist:Int?=null
+                if(currentSong!=null) {
+                    isExist = playlist?.indexOfFirst { it.id == currentSong?.id }
+                    Log.d("playlistFragment", "onReceive: isSongExist $isExist")
+                        if(isExist!=-1){
+                            Log.d("playlistFragment", "onReceive: in 2nd if isExist $isExist")
+                            musicServiceConnection.play()
+                        } else {
+                            Log.d("playlistFragment", "onReceive: in 2nd else")
+                            val mediaList = ArrayList<MediaItem>(1)
+                            addSongsAndPlay(playlist, 0)
+                        }
+
+                }
+
+                else {
+                    Log.d("playlistFragment", "onReceive: in 2nd else")
+                    val mediaList = ArrayList<MediaItem>(1)//if action is null then playlist cannot be null  and vice versa
+                    addSongsAndPlay(playlist, 0)
+                }
             }
-            musicServiceConnection.addAllSOngsAndPlay(mediaList)
+
+
         }
     } 
 
     private fun justAddSong(track: TrackModel?) {
-        currentSong=track!!
+//        currentSong=track!!
         val song=MediaItem.Builder().setUri(track?.previewUrl).build()
         exo.addMediaItem(song)
 
@@ -197,6 +241,7 @@ class SpotifyActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver(playlistReciever, IntentFilter(PlaylistFragment.RECIEVE_PLAYLIST))
         LocalBroadcastManager.getInstance(this).registerReceiver(updateSongDuration, IntentFilter(UPDATE_SONG_POSITION))
         LocalBroadcastManager.getInstance(this).registerReceiver(updateCurrentSongInfo, IntentFilter(SET_CURRENT_SONG_INFORMATION))
+        LocalBroadcastManager.getInstance(this).registerReceiver(SongReciever, IntentFilter(PlaylistFragment.ADD_SONG))
 
 
 
@@ -260,6 +305,22 @@ class SpotifyActivity : AppCompatActivity() {
         playerview=findViewById(R.id.playerview)
         playPause=findViewById(R.id.play_pause_song)
         fragmentContainer=findViewById(R.id.spotify_frame)
+    }
+
+    fun addSongsAndPlay(tracks: java.util.ArrayList<TrackModel>?, songPosition: Int) {
+        playlistTracks.clear()
+        val mediaList=ArrayList<MediaItem>(1)
+        tracks?.forEach {
+            if(it.previewUrl!=null) {
+                mediaList.add(MediaItem.fromUri(it.previewUrl!!))
+                playlistTracks.add(it)
+            }
+            viewModel.setPlaylistTracks(playlistTracks)
+        }
+        musicServiceConnection.addAllSOngsAndPlay(mediaList,songPosition)
+    }
+    fun isPresentIncurrentPlaylist(){
+
     }
 
     override fun onDestroy() {

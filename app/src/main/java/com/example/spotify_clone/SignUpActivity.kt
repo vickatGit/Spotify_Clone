@@ -103,19 +103,20 @@ class SignUpActivity : AppCompatActivity() {
         passNext.setBackgroundDrawable(ContextCompat.getDrawable(this,R.drawable.next_button_error_bg))
       }
     }
-    viewModel.isEmailAlreadyExist(input.text.toString()).observe(this, Observer {
-      if(it==false) {
-        viewModel.setEmail(input.text.toString())
-        setCurrentPosition(1)
-        proceedToPassword()
-      }else{
-        acknowledgement.text="This email already exists, Try using login"
-      }
-    })
+
     next.setOnClickListener {
-//      CoroutineScope(Dispatchers.IO).launch {
-        viewModel.isEmailAlreadyExist(input.text.toString())
-//      }
+        Log.d("next", "onCreate: checking email")
+      viewModel.isEmailAlreadyExist(input.text.toString()).observe(this, Observer {
+        if(it==false) {
+          viewModel.setEmail(input.text.toString())
+          setCurrentPosition(1)
+          Log.d("next", "onCreate: email doesn't exist")
+          proceedToPassword()
+        }else{
+          Log.d("next", "onCreate: email already exist")
+          acknowledgement.text="This email already exists, Try using login"
+        }
+      })
     }
     passNext.setOnClickListener {
       setCurrentPosition(2)
@@ -142,7 +143,7 @@ class SignUpActivity : AppCompatActivity() {
 
     createAccount.setOnClickListener {
       viewModel.setUsername(usernameInput.text.toString())
-      CoroutineScope(Dispatchers.IO).launch {
+
         viewModel.createUser().observe(this@SignUpActivity, Observer {
           Log.d("TAG", "onCreate: observer"+it)
           if(it!=null){
@@ -154,7 +155,7 @@ class SignUpActivity : AppCompatActivity() {
             UserLoginSignUpDatabase.getInstance(this@SignUpActivity)?.getUserLoginDao()?.insertUser(SqlUserEntity(null,it.username,it.userRef!!))
           }
         })
-      }
+
     }
   }
 
