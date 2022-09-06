@@ -1,8 +1,10 @@
 package com.example.spotify_clone.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import android.widget.ToggleButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.adamratzman.spotify.models.SimpleTrack
@@ -57,6 +60,17 @@ class AlbumFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_album, container, false)
         initialiseViews(view)
+        playPauseAlbum.setOnClickListener {
+            val intent= Intent()
+            intent.setAction(PlaylistFragment.RECIEVE_PLAYLIST)
+            if(!playPauseAlbum.isChecked){
+                intent.putExtra("action","pause")
+            }
+            else{
+                intent.putExtra("playlist",allTracksInfos)
+            }
+            LocalBroadcastManager.getInstance(this.requireContext()).sendBroadcast(intent)
+        }
 
         tracksAdapter= AlbumAdapter(allTracks)
         allTrackesRecycler.layoutManager=LinearLayoutManager(this.requireContext())
@@ -73,6 +87,21 @@ class AlbumFragment : Fragment() {
         viewModel.fetchAlbumTracks(albumId).observe(this.viewLifecycleOwner, Observer {
             allTracks.clear()
             allTracks.addAll(it!!)
+            var trackModel:TrackModel
+            it.forEach {
+                val track =it
+                trackModel = TrackModel(
+                    track?.id,
+                    null,
+                    it?.name,
+                    it?.artists?.get(0)?.name,
+                    it?.durationMs,
+                    it?.linkedTrack?.id,
+                    it?.previewUrl,
+                    false
+                )
+                allTracksInfos.add(trackModel)
+            }
             tracksAdapter.notifyDataSetChanged()
         })
         return view

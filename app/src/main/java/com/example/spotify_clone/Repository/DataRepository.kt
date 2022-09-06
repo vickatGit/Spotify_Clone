@@ -1,29 +1,31 @@
 package com.example.spotify_clone.Repository
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.widget.MultiAutoCompleteTextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import at.favre.lib.crypto.bcrypt.BCrypt
-import com.adamratzman.spotify.endpoints.pub.TrackAttribute
-import com.adamratzman.spotify.endpoints.pub.TuneableTrackAttribute
 import com.adamratzman.spotify.models.*
 import com.adamratzman.spotify.spotifyAppApi
-import com.adamratzman.spotify.utils.Locale
 import com.adamratzman.spotify.utils.Market
+import com.example.spotify_clone.Fragment.PlaylistFragment
+import com.example.spotify_clone.Models.ApiRelatedModels.GenresModel
 import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 //import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 //import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 import com.example.spotify_clone.Models.UserModel
+import com.example.spotify_clone.SpotifyActivity
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -32,7 +34,6 @@ class DataRepository {
     var user: UserModel? = null
     var isExist: Boolean = false
     var some: DocumentSnapshot? = null
-
     //Login Related Task
 
 
@@ -56,8 +57,11 @@ class DataRepository {
     //    private var allArtists:MutableLiveData<List<Artist>?> = MutableLiveData()
     private var commonLists = ArrayList<List<Thumbnail>>(1)
     private var allArtists: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
+    private var favouriteSongs: MutableLiveData<List<String>?> = MutableLiveData()
     private var featuredPlaylists: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
     private var chillPlaylist: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
+    private var genresPlaylist: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
+    private var sadPlaylist: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
     private var recommendations: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
 
     private var allCategories: MutableLiveData<List<SimplePlaylist>> = MutableLiveData()
@@ -66,11 +70,12 @@ class DataRepository {
     private var allTracks: MutableLiveData<List<PlaylistTrack>> = MutableLiveData()
     private var playlistInfo: MutableLiveData<Playlist> = MutableLiveData()
 
-    private var genres: MutableLiveData<List<String>> = MutableLiveData()
-    private var searchedTracks: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
+    private var genres: MutableLiveData<List<GenresModel>> = MutableLiveData()
+    private var searchedTracks: MutableLiveData<List<Track>?> = MutableLiveData()
     private var nextSong: MutableLiveData<Track> = MutableLiveData()
     private var albumTracks:MutableLiveData<List<SimpleTrack>?> = MutableLiveData()
     private var albumInfo:MutableLiveData<Album?> = MutableLiveData()
+    private var getTrack:MutableLiveData<Track?> = MutableLiveData()
 
     companion object {
 
@@ -241,6 +246,35 @@ class DataRepository {
         }
     }
 
+    fun getSadPlaylist() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            var thumb: Thumbnail
+            var thumbnails = ArrayList<Thumbnail>(1)
+            api.browse.getPlaylistsForCategoryRestAction(
+                "pop",
+                10,
+                null,
+                Market.IN
+            ).supplier.invoke().items.forEach {
+                thumb = Thumbnail(
+                    it.images.get(it.images.size - 1).url,
+                    it.name,
+                    it.type,
+                    it.id,
+                    chillPlaylist,
+                    "Pop Playlists"
+                )
+
+                thumbnails.add(thumb)
+
+            }
+            commonLists.add(thumbnails)
+            allLists.postValue(commonLists)
+            sadPlaylist.postValue(thumbnails)
+        }
+    }
+
     fun getChillPlaylist() {
         CoroutineScope(Dispatchers.IO).launch {
             val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
@@ -268,6 +302,37 @@ class DataRepository {
             allLists.postValue(commonLists)
             chillPlaylist.postValue(thumbnails)
         }
+    }
+
+    fun getGenresPlaylist( genres:String): MutableLiveData<List<Thumbnail>?> {
+        var thumb: Thumbnail
+        var thumbnails = ArrayList<Thumbnail>(1)
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            api.browse.getPlaylistsForCategory(genres,10,null,Market.IN).forEach {
+                api.browse.getPlaylistsForCategoryRestAction(
+                    genres,
+                    10,
+                    null,
+                    Market.IN
+                ).supplier.invoke().items.forEach {
+                    thumb = Thumbnail(
+                        it.images.get(it.images.size - 1).url,
+                        it.name,
+                        it.type,
+                        it.id,
+                        genresPlaylist,
+                         genres+" Playlists"
+                    )
+
+                    thumbnails.add(thumb)
+
+                }
+                genresPlaylist.postValue(thumbnails)
+            }
+
+        }
+        return genresPlaylist
     }
 
     @SuppressLint("NewApi")
@@ -299,6 +364,8 @@ class DataRepository {
 
         }
     }
+
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun getIndianCategoriesPlaylists() {
@@ -332,13 +399,22 @@ class DataRepository {
         }
     }
 
-    fun fetchTracks(id: String?) {
+    fun fetchTracks(id: String?,type:String) {
+
         CoroutineScope(Dispatchers.IO).launch {
             val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
             val tracks = ArrayList<PlaylistTrack>(1)
-            api.playlists.getPlaylistTracks(id!!).items.forEach {
-                tracks.add(it)
-
+            if(type=="genres") {
+                api.browse.getPlaylistsForCategoryRestAction(id!!, 10)
+                    .supplier.invoke().items.forEach {
+                        val play=it.toFullPlaylist()?.tracks?.forEach {
+                            tracks.add(it!!)
+                        }
+                    }
+            }else {
+                api.playlists.getPlaylistTracks(id!!).items.forEach {
+                    tracks.add(it)
+                }
             }
             allTracks.postValue(tracks)
         }
@@ -358,92 +434,97 @@ class DataRepository {
         return playlistInfo
     }
 
-    fun getGenres(): MutableLiveData<List<String>> {
-        val allGenres = ArrayList<String>(1)
+    fun getGenres(): MutableLiveData<List<GenresModel>> {
+        val allGenres = ArrayList<GenresModel>(1)
         CoroutineScope(Dispatchers.IO).launch {
             val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            allGenres.addAll(api.browse.getAvailableGenreSeeds())
+            api.browse.getCategoryList(20).items.forEach {
+                allGenres.add(GenresModel(it.id,it.name))
+            }
             genres.postValue(allGenres)
         }
         return genres
     }
 
-     fun searchSong(newText: String?): MutableLiveData<List<Thumbnail>?> {
+     fun searchSong(newText: String?): MutableLiveData<List<Track>?> {
         CoroutineScope(Dispatchers.Main).launch {
             val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
             var thumb: Thumbnail
+            var trackList=ArrayList<Track>(1)
             var thumbnails = ArrayList<Thumbnail>(1)
-
             api.search.searchTrack(newText!!, null, null, Market.IN).items.forEach {
-                thumb = Thumbnail(
-                    it.album.images.get(it.album.images.size - 1).url,
-                    it.name,
-                    it.type,
-                    it.id,
-                    searchedTracks,
-                    ""+it.artists.get(0).name+","+it.artists.get(it.artists.size-1).name
-                )
-                thumbnails.add(thumb)
+//                thumb = Thumbnail(
+//                    it.album.images.get(it.album.images.size - 1).url,
+//                    it.name,
+//                    it.type,
+//                    it.id,
+//                    searchedTracks,
+//                    ""+it.artists.get(0).name+","+it.artists.get(it.artists.size-1).name
+//                )
+                Log.d(TAG, "searchSong: in search result name is ${it.name} and id is ${it.id}")
+//                thumbnails.add(thumb)
+                trackList.add(it)
+
             }
 
-            searchedTracks.postValue(thumbnails)
+            searchedTracks.postValue(trackList)
         }
         return searchedTracks
     }
 
-    fun searchAlbums(newText: String?): MutableLiveData<List<Thumbnail>?>{
-        CoroutineScope(Dispatchers.Main).launch {
-            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            var thumb: Thumbnail
-            var thumbnails = ArrayList<Thumbnail>(1)
-            api.search.searchAlbum(newText.toString()).items.forEach {
-                thumb= Thumbnail(it.images.get(0).url,it.name,it.type,it.id,searchedTracks,
-                    ""+it.artists.get(0).name+""+it.artists.get(it.artists.size-1).name)
-                thumbnails.add(thumb)
-            }
-            searchedTracks.postValue(thumbnails)
-        }
-        return searchedTracks
-    }
-    fun getSearches(): MutableLiveData<List<Thumbnail>?> {
-        return searchedTracks
-    }
-    fun searchArtists(newText: String?): MutableLiveData<List<Thumbnail>?>{
-        CoroutineScope(Dispatchers.Main).launch {
-            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            var thumb: Thumbnail
-            var thumbnails = ArrayList<Thumbnail>(1)
-            api.search.searchArtist(newText.toString()).items.forEach {
-                if(it.images.size>0) {
-
-                    thumb = Thumbnail(
-                        it.images.get(it.images.size - 1).url,
-                        it.name,
-                        it.type,
-                        it.id,
-                        searchedTracks,
-                        ""
-                    )
-                    thumbnails.add(thumb)
-                }
-            }
-            searchedTracks.postValue(thumbnails)
-        }
-        return searchedTracks
-    }
-    fun searchPlaylist(newText: String?): MutableLiveData<List<Thumbnail>?>{
-        CoroutineScope(Dispatchers.Main).launch {
-            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-            var thumb: Thumbnail
-            var thumbnails = ArrayList<Thumbnail>(1)
-            api.search.searchPlaylist(newText.toString()).items.forEach {
-                thumb= Thumbnail(it.images.get(it.images.size - 1).url,it.name,it.type,it.id,searchedTracks,"")
-                thumbnails.add(thumb)
-            }
-            searchedTracks.postValue(thumbnails)
-        }
-        return searchedTracks
-    }
+//    fun searchAlbums(newText: String?): MutableLiveData<List<Thumbnail>?>{
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+//            var thumb: Thumbnail
+//            var thumbnails = ArrayList<Thumbnail>(1)
+//            api.search.searchAlbum(newText.toString()).items.forEach {
+//                thumb= Thumbnail(it.images.get(0).url,it.name,it.type,it.id,searchedTracks,
+//                    ""+it.artists.get(0).name+""+it.artists.get(it.artists.size-1).name)
+//                thumbnails.add(thumb)
+//            }
+//            searchedTracks.postValue(thumbnails)
+//        }
+//        return searchedTracks
+//    }
+//    fun getSearches(): MutableLiveData<List<Thumbnail>?> {
+//        return searchedTracks
+//    }
+//    fun searchArtists(newText: String?): MutableLiveData<List<Thumbnail>?>{
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+//            var thumb: Thumbnail
+//            var thumbnails = ArrayList<Thumbnail>(1)
+//            api.search.searchArtist(newText.toString()).items.forEach {
+//                if(it.images.size>0) {
+//
+//                    thumb = Thumbnail(
+//                        it.images.get(it.images.size - 1).url,
+//                        it.name,
+//                        it.type,
+//                        it.id,
+//                        searchedTracks,
+//                        ""
+//                    )
+//                    thumbnails.add(thumb)
+//                }
+//            }
+//            searchedTracks.postValue(thumbnails)
+//        }
+//        return searchedTracks
+//    }
+//    fun searchPlaylist(newText: String?): MutableLiveData<List<Thumbnail>?>{
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+//            var thumb: Thumbnail
+//            var thumbnails = ArrayList<Thumbnail>(1)
+//            api.search.searchPlaylist(newText.toString()).items.forEach {
+//                thumb= Thumbnail(it.images.get(it.images.size - 1).url,it.name,it.type,it.id,searchedTracks,"")
+//                thumbnails.add(thumb)
+//            }
+//            searchedTracks.postValue(thumbnails)
+//        }
+//        return searchedTracks
+//    }
 
     fun fetchNextSong(linkedTrackId: String?): MutableLiveData<Track> {
         CoroutineScope(Dispatchers.IO).launch {
@@ -473,6 +554,74 @@ class DataRepository {
             albumInfo.postValue(api.albums.getAlbum(albumId))
         }
         return albumInfo
+    }
+
+    fun addToFavourites(
+        id: String?,
+        userId: String?,
+        currentPlaylistId: String?,
+        applicationContext: Context
+    ) {
+        val favouriteSong=hashMapOf(
+            "song" to id!!
+        )
+        SpotifyActivity.userFavouriteSongs.add(id)
+        db.collection("Users").document(userId!!).collection("favourite_songs")
+            .document(id!!).set(favouriteSong, SetOptions.merge()).addOnSuccessListener {
+                Log.d(TAG, "addedToFavourites: ")
+                val curpos=PlaylistFragment.allTracksInfos.indexOfFirst { it.id==id }
+                if(curpos!=-1) {
+                    SpotifyActivity.playlistTracks.get(curpos).isFavourite = false
+                    PlaylistFragment.allTracksInfos.get(curpos).isFavourite = true
+                }
+                var intent=Intent()
+                intent.setAction("updatePlaylist")
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+            }
+    }
+
+    fun removeFromFavourites(
+        id: String?,
+        userId: String?,
+        currentPlaylistId: String?,
+        applicationContext: Context
+    ) {
+        db.collection("Users").document(userId!!).collection("favourite_songs").document(id!!).delete().addOnSuccessListener {
+            Log.d(TAG, "removedFromFavourites: ")
+            var curpos=SpotifyActivity.userFavouriteSongs.indexOf(id)
+            if(curpos!=-1) {
+                SpotifyActivity.userFavouriteSongs.removeAt(curpos)
+            }
+            val pos=PlaylistFragment.allTracksInfos.indexOfFirst { it.id==id }
+            if(pos!=-1) {
+                SpotifyActivity.playlistTracks.get(pos).isFavourite = false
+                PlaylistFragment.allTracksInfos.get(pos).isFavourite = false
+            }
+            var intent=Intent()
+            intent.setAction("updatePlaylist")
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+        }
+    }
+    fun getSongFavourites(userId: String?): MutableLiveData<List<String>?> {
+        val songList=ArrayList<String>(0)
+        db.collection("Users").document(userId!!).collection("favourite_songs").get().addOnSuccessListener {
+            it.documents.forEach {
+                songList.add(it.get("song").toString())
+            }
+            favouriteSongs.postValue(songList)
+        }
+        return favouriteSongs
+    }
+
+    fun getSong(songId: String): MutableLiveData<Track?> {
+        Log.d(TAG, "getSong: insearchsong in repo $songId")
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            val track=api.tracks.getTrack(songId)
+            Log.d(TAG, "data repo getSong: ${track?.name} and id is ${track?.id}")
+            getTrack.postValue(track)
+        }
+        return getTrack
     }
 
 }

@@ -29,7 +29,7 @@ class AlbumAdapter(val allTracks: ArrayList<SimpleTrack>) : RecyclerView.Adapter
     inner class AlbumTrackHolder(view: View) : RecyclerView.ViewHolder(view){
         val songName:TextView=view.findViewById(R.id.song_name)
         val artist:TextView=view.findViewById(R.id.artist)
-        val menu:ImageView=view.findViewById(R.id.menu)
+//        val menu:ImageView=view.findViewById(R.id.menu)
     }
 
 }

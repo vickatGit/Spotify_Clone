@@ -11,13 +11,5 @@ class NotificationRecieverService: BroadcastReceiver() {
         if (context != null) {
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent!!)
         }
-        when(intent?.action){
-//            MusicPlayerService.ACTION_PLAY -> {
-//                val intent=Intent()
-//                intent.setAction(MusicPlayerService.ACTION_PLAY)
-//                LocalBroadcastManager.
-//            }
-
-        }
     }
 }

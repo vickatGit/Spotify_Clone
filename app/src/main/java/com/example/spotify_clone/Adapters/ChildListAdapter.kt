@@ -87,7 +87,6 @@ class ChildListAdapter(val allThumbs: List<Thumbnail>, val requireActivity: Frag
 
     fun setAdapter(childAdapter: ChildListAdapter) {
         this.adapter=childAdapter
-
     }
 
     fun updateAdapter(it: List<Thumbnail>, childAdapter: ChildListAdapter) {

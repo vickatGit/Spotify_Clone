@@ -17,7 +17,7 @@ class SignUpLoginActivity : AppCompatActivity() {
   private lateinit var login:Button
 
   companion object{
-    private val USER_REF="user reference"
+    val USER_REF="user reference"
     private val TAG="tag"
   }
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,14 +25,7 @@ class SignUpLoginActivity : AppCompatActivity() {
     setContentView(R.layout.activity_sign_up_login)
     initialiseViews()
 
-    val user: SqlUserEntity? =UserLoginSignUpDatabase.getInstance(this)?.getUserLoginDao()?.getUser()
-    Log.d(TAG, "onCreate: checking")
-    if(user?.userReference!=null){
-      Log.d(TAG, "onCreate: the user is $user")
-      val intent=Intent(this,SpotifyActivity::class.java)
-      intent.putExtra(USER_REF,user?.userReference)
-      startActivity(intent)
-    }
+
     signup.setOnClickListener {
       val intent= Intent(this,SignUpActivity::class.java)
       startActivity(intent)

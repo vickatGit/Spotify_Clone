@@ -30,6 +30,13 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
         val track=allTracks.get(position).track?.asTrack
         holder.songName.text= track?.asTrack?.name
         holder.songArtists.text=track?.asTrack?.artists?.get(0)?.name
+        Log.d("TAG", "onBindViewHolder: current song is "+PlaylistFragment.allTracksInfos.get(position).name+" and isLiked : "+PlaylistFragment.allTracksInfos.get(position).isFavourite)
+        var isFavourite: Boolean? = PlaylistFragment.allTracksInfos.get(position).isFavourite
+        if(isFavourite==true){
+            holder.isUsersFavourite.visibility=View.VISIBLE
+        }else{
+            holder.isUsersFavourite.visibility=View.INVISIBLE
+        }
         Glide.with(holder.songThumbnail.context).load(track?.album?.images?.get(track?.album.images.size-1)?.url).into(holder.songThumbnail)
         holder.song.setOnClickListener {
             val trackInfo = TrackModel(
@@ -39,12 +46,12 @@ class PlaylistTracksAdapter(val allTracks: ArrayList<PlaylistTrack>) : RecyclerV
                 track?.artists?.get(0)?.name,
                 track?.durationMs,
                 track?.linkedTrack?.id,
-                track?.previewUrl
+                track?.previewUrl,isFavourite
             )
             Log.d("TAG", "track name: " + track?.name + "and album name is" + track?.album?.name)
+
             val intent = Intent()
             val bundle = Bundle()
-//            bundle.putString("SongAction","clear_and_play")
             intent.putExtra("song_position",position)
             intent.putExtra("song_id",trackInfo.id)
             intent.putExtra("track", PlaylistFragment.allTracksInfos)

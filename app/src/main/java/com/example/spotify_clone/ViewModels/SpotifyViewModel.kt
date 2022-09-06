@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.adamratzman.spotify.models.Track
-import com.example.spotify_clone.Fragment.PlaylistFragment
 import com.example.spotify_clone.Models.ApiRelatedModels.TrackModel
 import com.example.spotify_clone.Repository.DataRepository
+import com.example.spotify_clone.SpotifyActivity
 
 class SpotifyViewModel: ViewModel() {
 
@@ -15,6 +15,7 @@ class SpotifyViewModel: ViewModel() {
     private var userFragmentNavigationHistory=ArrayList<Fragment>(1)
     private var playlistTracks=ArrayList<TrackModel>(1)
     private var currentSongPosition:Int?=null
+    private var userId:String? = null
     init {
         repo= DataRepository.getInstance()
     }
@@ -45,5 +46,24 @@ class SpotifyViewModel: ViewModel() {
     }
     fun getCurrentSongPosition(): Int? {
         return currentSongPosition
+    }
+
+    fun addToFavourites(id: String?, currentPlaylistId: String?, spotifyActivity: SpotifyActivity) {
+        repo.addToFavourites(id,this.userId,currentPlaylistId,spotifyActivity.applicationContext)
+    }
+
+    fun setUserId(userId: String?) {
+        this.userId=userId
+    }
+    fun getUserId(): String? {
+        return userId
+    }
+
+    fun removeFromFavourites(id: String?, currentPlaylistId: String?,spotifyActivity: SpotifyActivity) {
+        repo.removeFromFavourites(id,this.userId,currentPlaylistId,spotifyActivity.applicationContext)
+    }
+
+    fun getFavouriteSongs(): MutableLiveData<List<String>?> {
+        return repo.getSongFavourites(userId)
     }
 }

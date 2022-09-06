@@ -11,10 +11,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpotifyClone">
+        <activity
+            android:name=".SplashScreen"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".MusicService.MusicPlayerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".SpotifyActivity"
@@ -29,25 +39,25 @@
             android:exported="false" />
         <activity
             android:name=".SignUpLoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-        <receiver android:name=".MusicService.NotificationService.NotificationRecieverService"
+
+        <receiver
+            android:name=".MusicService.NotificationService.NotificationRecieverService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-
-                <action android:name="play_pause_song"/>
-                <action android:name="seek_to_next_song"/>
-                <action android:name="seek_to_previous_song"/>
-
+                <action android:name="play_pause_song" />
+                <action android:name="seek_to_next_song" />
+                <action android:name="seek_to_previous_song" />
             </intent-filter>
         </receiver>
     </application>

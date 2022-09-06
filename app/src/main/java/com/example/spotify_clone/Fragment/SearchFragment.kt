@@ -13,6 +13,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spotify_clone.Adapters.SearchGenresAdapter
+import com.example.spotify_clone.Models.ApiRelatedModels.GenresModel
 import com.example.spotify_clone.R
 import com.example.spotify_clone.SpotifyActivity
 import com.example.spotify_clone.ViewModels.SearchGenresViewModel
@@ -24,7 +25,7 @@ class SearchFragment(val spotifyActivity: SpotifyActivity) : Fragment() {
     private lateinit var genresRecycler:RecyclerView
     private lateinit var genresAdapter:SearchGenresAdapter
     private lateinit var viewmodel:SearchGenresViewModel
-    private var allGenres=ArrayList<String>(1)
+    private var allGenres=ArrayList<GenresModel>(1)
     private lateinit var searchGenresAdapter: SearchGenresAdapter
 
 
@@ -38,10 +39,10 @@ class SearchFragment(val spotifyActivity: SpotifyActivity) : Fragment() {
 
         val view=inflater.inflate(R.layout.fragment_search, container, false)
         initialise(view)
-        searchGenresAdapter= SearchGenresAdapter(allGenres)
-        genresRecycler.layoutManager=GridLayoutManager(this.requireContext(),2)
-        genresRecycler.adapter=searchGenresAdapter
         viewmodel=ViewModelProvider(this).get(SearchGenresViewModel::class.java)
+        genresRecycler.layoutManager=GridLayoutManager(this.requireContext(),2)
+        searchGenresAdapter= SearchGenresAdapter(allGenres,viewmodel,this)
+        genresRecycler.adapter=searchGenresAdapter
         viewmodel.getGenres().observe(this.viewLifecycleOwner, Observer {
             allGenres.clear()
             allGenres.addAll(it)

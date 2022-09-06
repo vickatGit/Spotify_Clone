@@ -1,7 +1,9 @@
 package com.example.spotify_clone.Fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -45,25 +47,41 @@ class PlaylistFragment : Fragment() {
     private lateinit var allTrackesRecycler: RecyclerView
     private lateinit var playPausePlaylist:ToggleButton
     private lateinit var tracksAdapter: PlaylistTracksAdapter
-    private var allTracks= ArrayList<PlaylistTrack>()
+
 
     private lateinit var progress: ProgressBar
     private lateinit var playlistView: CoordinatorLayout
 
+    companion object{
+        var allTracks= ArrayList<PlaylistTrack>()
+        var allTracksInfos= ArrayList<TrackModel>()
+        val RECIEVE_PLAYLIST: String="recieve_playlist"
+        val TAG="playlist_fragment"
+        val ADD_SONG="add_song"
+
+    }
+    val updatePlaylist:BroadcastReceiver=object:BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            tracksAdapter.notifyDataSetChanged()
+        }
+
+    }
+    var playPauseUpdateReciever:BroadcastReceiver=object:BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            playPausePlaylist.isChecked= intent?.getBooleanExtra("isPlaying",false)!!
+        }
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance=true
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(updatePlaylist, IntentFilter("updatePlaylist"))
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(playPauseUpdateReciever, IntentFilter("updatePlayPauseButton"))
         Log.d(TAG, "onCreate: ")
         this.id= arguments?.getString("id").toString()
         this.type= arguments?.getString("type").toString()
         Log.d("TAG", "onCreate: search $id and ")
 
-    }
-    companion object{
-        var allTracksInfos= ArrayList<TrackModel>()
-        val RECIEVE_PLAYLIST: String="recieve_playlist"
-        val TAG="playlist_fragment"
-        val ADD_SONG="add_song"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -80,28 +98,46 @@ class PlaylistFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
             progress.visibility= View.GONE
             playlistView.visibility=View.VISIBLE
-        },2000)
+        },3000)
         viewmodel= ViewModelProvider(this).get(PlaylistActivityViewModel::class.java)
         viewmodel.setId(id)
-        viewmodel.getPlaylistInfo().observe(this.viewLifecycleOwner, Observer {
-            Glide.with(this).load(it.images.get(0).url).into(playlistThumbnail)
-            playlistDescription.text=it.description
-            toolbar.title=it.name
-        })
-        viewmodel.fetchTracks()
+        if(this.type!="genres"){
+
+            viewmodel.getPlaylistInfo().observe(this.viewLifecycleOwner, Observer {
+                Glide.with(this).load(it.images.get(0).url).into(playlistThumbnail)
+                playlistDescription.text=it.description
+                toolbar.title=it.name
+            })
+        }
+        viewmodel.fetchTracks(this.type)
         viewmodel.getFetchedTracks().observe(this.viewLifecycleOwner, Observer {
             allTracks.clear()
             Log.d("TAG", "onCreate: fetchedtracks $it")
-            allTracks.addAll(it)
+//            allTracks.addAll(it)
             var trackModel:TrackModel
+            var isFavourite:Boolean=false
             allTracksInfos.clear()
             it.forEach {
                 val track=it?.track
-                trackModel=TrackModel(track?.id,track?.asTrack?.album?.images?.get(track?.asTrack?.album?.images?.size!!-1)?.url,track?.asTrack?.name,
-                track?.asTrack?.artists?.get(0)?.name,track?.asTrack?.durationMs,track?.asTrack?.linkedTrack?.id,track?.asTrack?.previewUrl)
-                allTracksInfos.add(trackModel)
+                if(track?.asTrack?.previewUrl!=null) {
+                    allTracks.add(it)
+                    isFavourite=SpotifyActivity.userFavouriteSongs.contains(track.id)
+                    trackModel = TrackModel(
+                        track?.id,
+                        track?.asTrack?.album?.images?.get(track?.asTrack?.album?.images?.size!! - 1)?.url,
+                        track?.asTrack?.name,
+                        track?.asTrack?.artists?.get(0)?.name,
+                        track?.asTrack?.durationMs,
+                        track?.asTrack?.linkedTrack?.id,
+                        track?.asTrack?.previewUrl,
+                        isFavourite
+                    )
+                    allTracksInfos.add(trackModel)
+                    Log.d("TAG", "song Preview url: "+trackModel.previewUrl)
+                }
             }
             tracksAdapter.notifyDataSetChanged()
+
 
         })
         playPausePlaylist.setOnClickListener {
@@ -133,51 +169,8 @@ class PlaylistFragment : Fragment() {
         progress=view.findViewById(R.id.progress)
         playlistView=view.findViewById(R.id.playlist_activity)
         playPausePlaylist=view.findViewById(R.id.playlist_pause_icon)
-    }
 
-    override fun onAttach(context: Context) {
-        Log.d(TAG, "onAttach: ")
-        super.onAttach(context)
-    }
-
-    override fun onStart() {
-        Log.d(TAG, "onStart: ")
-        super.onStart()
-    }
-
-    override fun onResume() {
-        Log.d(TAG, "onResume: ")
-        super.onResume()
-    }
-
-    override fun onPause() {
-        Log.d(TAG, "onPause: ")
-        super.onPause()
 
     }
 
-    override fun onStop() {
-        Log.d(TAG, "onStop: ")
-        super.onStop()
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewStateRestored: ")
-        super.onViewStateRestored(savedInstanceState)
-    }
-
-    override fun onDestroy() {
-        Log.d(TAG, "onDestroy: ")
-        super.onDestroy()
-    }
-
-    override fun onDetach() {
-        Log.d(TAG, "onDetach: ")
-        super.onDetach()
-    }
-
-    override fun onDestroyView() {
-        Log.d(TAG, "onDestroyView: ")
-        super.onDestroyView()
-    }
 }

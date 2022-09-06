@@ -14,9 +14,10 @@ class HomeFragmentViewModel: ViewModel() {
     init {
         repo=DataRepository()
 
-        repo.fetchArtists()
+//        repo.fetchArtists()
         repo.fetchTopList()
-        repo.getRecommendations()
+        repo.getSadPlaylist()
+//        repo.getRecommendations()
         repo.getIndianCategoriesPlaylists()
         repo.getChillPlaylist()
         repo.getFeaturedPlaylists()

@@ -35,6 +35,7 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_playlist.xml" value="0.33" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_sign_up_login.xml" value="0.14270833333333333" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_splash_screen.xml" value="0.2" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/activity_spotify.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/album_track_layout.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/artist_layout.xml" value="0.25" />
@@ -43,7 +44,9 @@
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_home.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_playlist.xml" value="0.25" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search.xml" value="0.27291666666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search_genres.xml" value="0.18854166666666666" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search_song.xml" value="0.27291666666666664" />
+        <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search_song_results.xml" value="0.16979166666666667" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/fragment_search_song_viemodel.xml" value="0.27291666666666664" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/generic_thumb_layout.xml" value="0.23655913978494625" />
         <entry key="..\:/android studio/SpotifyClone/app/src/main/res/layout/home_list_layout.xml" value="0.24048913043478262" />

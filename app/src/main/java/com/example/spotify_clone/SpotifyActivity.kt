@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.adamratzman.spotify.*
@@ -28,6 +29,7 @@ class SpotifyActivity : AppCompatActivity() {
     private lateinit var songThumb:ImageView
     private lateinit var songArtist:TextView
     private lateinit var playPause:ToggleButton
+    private lateinit var isFavourite:ToggleButton
     private lateinit var songProgress:ProgressBar
     private lateinit var bottomNavigationView:BottomNavigationView
     private lateinit var viewModel:SpotifyViewModel
@@ -35,6 +37,7 @@ class SpotifyActivity : AppCompatActivity() {
     private lateinit var fragmentContainer:FrameLayout
     private lateinit var musicServiceConnection:MusicPlayerService
     companion object{
+        var currentPlaylistId:String?=null
         var currentSong:TrackModel?=null
         private var intent:Intent=Intent()
         lateinit var playerview:PlayerControlView
@@ -43,6 +46,7 @@ class SpotifyActivity : AppCompatActivity() {
         val SET_CURRENT_SONG_INFORMATION="update_song_info"
         val CURRENT_SONG_POSITION="current_song_position"
         var playlistTracks=ArrayList<TrackModel>(0)
+        var userFavouriteSongs=ArrayList<String>(0)
         public lateinit var exo:ExoPlayer
         public val TAG="tag"
         public val FRAG_RECIEVER="launchPlaylist"
@@ -54,7 +58,6 @@ class SpotifyActivity : AppCompatActivity() {
             musicServiceConnection=musicBinder.getInstanceOfMusicBinder()
             musicServiceConnection.setPlayerview(playerview)
             Log.d(TAG, "onServiceConnected: ")
-
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -70,11 +73,18 @@ class SpotifyActivity : AppCompatActivity() {
         }
 
     }
+    var playPauseUpdateReciever:BroadcastReceiver=object:BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            playPause.isChecked= intent?.getBooleanExtra("isPlaying",false)!!
+        }
+
+    }
     var SongReciever:BroadcastReceiver=object:BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             var songPosition=intent?.getIntExtra("song_position",0)
             var tracks=intent?.getParcelableArrayListExtra<TrackModel>("track")
             var songId=intent?.getStringExtra("song_id")
+            Log.d(TAG, "onReceive: the song id is $songId")
             if(playlistTracks.size!=0) {
                 val isExist= playlistTracks.indexOfFirst { it.id==songId }
                 if (isExist!=-1) {
@@ -119,6 +129,18 @@ class SpotifyActivity : AppCompatActivity() {
                     viewModel.setCurrentFragment(albumFrag)
                 }
             }
+            else if(type=="genres"){
+                val playFrag=PlaylistFragment()
+                val bundle=Bundle()
+                bundle.putString("id",id)
+                bundle.putString("type",type)
+                playFrag.setArguments(bundle)
+                if(!supportFragmentManager.isDestroyed) {
+                    supportFragmentManager.beginTransaction().replace(R.id.spotify_frame, playFrag)
+                        .addToBackStack(null).commit()
+                }
+                viewModel.setCurrentFragment(playFrag)
+            }
             else if(type=="playlist") {
                 val playFrag=PlaylistFragment()
                 val bundle=Bundle()
@@ -156,10 +178,17 @@ class SpotifyActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val songInfo=intent?.getIntExtra(CURRENT_SONG_POSITION,0)
             viewModel.setCurrentSong(songInfo)
-//            currentSong= playlistTracks.get(exo.currentMediaItemIndex)
-                Glide.with(applicationContext).load(playlistTracks.get(songInfo!!).image).into(songThumb)
-                songArtist.text = playlistTracks.get(songInfo!!)?.artist
-                controllerSongName.text =playlistTracks.get(songInfo!!)?.name
+            Glide.with(applicationContext).load(playlistTracks.get(songInfo!!).image).into(songThumb)
+            songArtist.text = playlistTracks.get(songInfo!!)?.artist
+            controllerSongName.text =playlistTracks.get(songInfo!!)?.name
+            val favourite= playlistTracks.get(songInfo!!).isFavourite!!
+            if(favourite==true){
+                isFavourite.isChecked=true
+            }else{
+                isFavourite.isChecked=false
+            }
+
+            Log.d(TAG, "onReceive: is favourite or not"+favourite)
         }
 
     }
@@ -175,14 +204,14 @@ class SpotifyActivity : AppCompatActivity() {
                     isExist = playlistTracks?.indexOfFirst { it.id == currentSong?.id }
                 if(isExist!=-1) {
                     musicServiceConnection.pause()
-                    Log.d("playlistFragment", "onReceive: pausing music")
+                    Log.d("playlistFragment", "onReceive: in pausing music")
                 }
             }else{//if action is null then playlist cannot be null  and vice versa
                 Log.d("playlistFragment", "onReceive: inelse")
                 var isExist:Int?=null
                 if(currentSong!=null) {
                     isExist = playlist?.indexOfFirst { it.id == currentSong?.id }
-                    Log.d("playlistFragment", "onReceive: isSongExist $isExist")
+                    Log.d("playlistFragment", "onReceive: in isSongExist $isExist")
                         if(isExist!=-1){
                             Log.d("playlistFragment", "onReceive: in 2nd if isExist $isExist")
                             musicServiceConnection.play()
@@ -223,8 +252,18 @@ class SpotifyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spotify)
+        val userId=intent.getStringExtra(SignUpLoginActivity.USER_REF)
+        Log.d(TAG, "onCreate: userId is $userId")
         initialise()
         viewModel=ViewModelProvider(this).get(SpotifyViewModel::class.java)
+        if(viewModel.getUserId()==null) {
+            viewModel.setUserId(userId)
+        }
+        viewModel.getFavouriteSongs().observe(this, Observer {
+            if (it?.size!! > 0) {
+                userFavouriteSongs.addAll(it)
+            }
+        })
         if(viewModel.getCurrentSongPosition()!=null){
             var songInfo=viewModel.getCurrentSongPosition()
             Glide.with(applicationContext).load(playlistTracks.get(songInfo!!).image).into(songThumb)
@@ -242,6 +281,7 @@ class SpotifyActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver(updateSongDuration, IntentFilter(UPDATE_SONG_POSITION))
         LocalBroadcastManager.getInstance(this).registerReceiver(updateCurrentSongInfo, IntentFilter(SET_CURRENT_SONG_INFORMATION))
         LocalBroadcastManager.getInstance(this).registerReceiver(SongReciever, IntentFilter(PlaylistFragment.ADD_SONG))
+        LocalBroadcastManager.getInstance(this).registerReceiver(playPauseUpdateReciever, IntentFilter("updatePlayPauseButton"))
 
 
 
@@ -263,6 +303,9 @@ class SpotifyActivity : AppCompatActivity() {
             }
         }
 
+        isFavourite.setOnClickListener {
+
+        }
         if(supportFragmentManager.backStackEntryCount==0) {
             val homeFragment: HomeFragment = HomeFragment()
             supportFragmentManager.beginTransaction().replace(R.id.spotify_frame, homeFragment)
@@ -276,15 +319,19 @@ class SpotifyActivity : AppCompatActivity() {
                 musicServiceConnection.play()
             }
         }
-
-
-
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        unbindService(MusicPlayerServiceConnection)
+//        isFavourite.setOnCheckedChangeListener { buttonView, isChecked ->
+//
+//        }
+        isFavourite.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d(TAG, "onCreate: islikedornot "+isFavourite.isChecked)
+            if(isFavourite.isChecked){
+                isFavourite.isChecked=true
+                viewModel.addToFavourites(currentSong?.id, currentPlaylistId,this)
+            }else if(!isFavourite.isChecked){
+                isFavourite.isChecked=false
+                viewModel.removeFromFavourites(currentSong?.id,currentPlaylistId,this)
+            }
+        }
     }
     override fun onStart() {
         super.onStart()
@@ -298,6 +345,7 @@ class SpotifyActivity : AppCompatActivity() {
         exo=ExoPlayer.Builder(this).build()
         songThumb=findViewById(R.id.song_controller_thumbnail)
         songArtist=findViewById(R.id.song_artist)
+        isFavourite=findViewById(R.id.like_btn)
         controllerSongName=findViewById(R.id.song_name)
         songProgress = findViewById(R.id.song_progress)
         songProgress.progressTintList= ColorStateList.valueOf(Color.WHITE)
@@ -319,20 +367,13 @@ class SpotifyActivity : AppCompatActivity() {
         }
         musicServiceConnection.addAllSOngsAndPlay(mediaList,songPosition)
     }
-    fun isPresentIncurrentPlaylist(){
-
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         stopService(intent)
     }
-
     override fun onBackPressed() {
-
         var frag: Fragment? =supportFragmentManager.findFragmentById(R.id.spotify_frame)
         val frag2=supportFragmentManager.findFragmentById(R.id.home_fragment)
-
         if(supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount-1)==frag2)
             Log.d(TAG, "onBackPressed: ")
         else if(supportFragmentManager.backStackEntryCount >0) {
@@ -342,5 +383,4 @@ class SpotifyActivity : AppCompatActivity() {
         else
             super.onBackPressed()
     }
-
 }

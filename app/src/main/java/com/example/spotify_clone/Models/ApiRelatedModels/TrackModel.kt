@@ -11,5 +11,6 @@ data class TrackModel(
     val artist: String?,
     val duration: Int?,
     val linkedTrackId: String?,
-    val previewUrl: String?
+    val previewUrl: String?,
+    var isFavourite:Boolean?=false
 ) : Parcelable

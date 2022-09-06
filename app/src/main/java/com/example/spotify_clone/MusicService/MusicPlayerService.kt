@@ -23,6 +23,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.spotify_clone.Fragment.PlaylistFragment
 import com.example.spotify_clone.MusicService.NotificationService.NotificationRecieverService
 import com.example.spotify_clone.R
 import com.example.spotify_clone.SpotifyActivity
@@ -114,13 +115,13 @@ class MusicPlayerService : Service() {
     fun pause(){
         if(exo.isPlaying) {
             exo.pause()
-            showNotification(R.drawable.pause_icon)
+//            showNotification(R.drawable.pause_icon)
         }
     }
     fun play(){
         if(!exo.isPlaying) {
             exo.play()
-            showNotification(R.drawable.play_icon)
+//            showNotification(R.drawable.play_icon)
         }
     }
     fun addAllSOngsAndPlay(mediaList: ArrayList<MediaItem>, songPosition: Int) {
@@ -139,9 +140,9 @@ class MusicPlayerService : Service() {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             Log.d(SpotifyActivity.TAG, "onMediaItemTransition: ")
             super.onMediaItemTransition(mediaItem, reason)
-            pos= exo.nextMediaItemIndex-1
+            pos = exo.currentMediaItemIndex
             SpotifyActivity.currentSong=SpotifyActivity.playlistTracks.get(pos)
-            Log.d("TAG", "onMediaItemTransition: ${exo.nextMediaItemIndex-1}")
+            Log.d("TAG", "onMediaItemTransition: the exo${exo.currentMediaItemIndex} and playlis is ${PlaylistFragment.allTracksInfos.size}")
             if(SpotifyActivity.playlistTracks.size>0) {
                 image=BitmapFactory.decodeResource(resources,R.drawable.spotify_logo)
                 Glide.with(applicationContext).asBitmap().load(SpotifyActivity.playlistTracks.get(pos).image)
@@ -157,6 +158,7 @@ class MusicPlayerService : Service() {
 
                         }
                         override fun onLoadCleared(placeholder: Drawable?) {
+
                         }
                     })
 
@@ -167,7 +169,14 @@ class MusicPlayerService : Service() {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
-//            playPause.isChecked=isPlaying
+            val intent=Intent()
+            intent.putExtra("isPlaying",isPlaying)
+            intent.setAction("updatePlayPauseButton")
+            LocalBroadcastManager.getInstance(playerView!!.context).sendBroadcast(intent)
+            if(isPlaying)
+                showNotification(R.drawable.play_icon)
+            else
+                showNotification(R.drawable.pause_icon)
         }
 
     }
