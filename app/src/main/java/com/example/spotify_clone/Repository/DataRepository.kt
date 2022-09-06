@@ -72,6 +72,7 @@ class DataRepository {
 
     private var genres: MutableLiveData<List<GenresModel>> = MutableLiveData()
     private var searchedTracks: MutableLiveData<List<Track>?> = MutableLiveData()
+    private var searchedPlaylist: MutableLiveData<List<Thumbnail>?> = MutableLiveData()
     private var nextSong: MutableLiveData<Track> = MutableLiveData()
     private var albumTracks:MutableLiveData<List<SimpleTrack>?> = MutableLiveData()
     private var albumInfo:MutableLiveData<Album?> = MutableLiveData()
@@ -512,19 +513,19 @@ class DataRepository {
 //        }
 //        return searchedTracks
 //    }
-//    fun searchPlaylist(newText: String?): MutableLiveData<List<Thumbnail>?>{
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
-//            var thumb: Thumbnail
-//            var thumbnails = ArrayList<Thumbnail>(1)
-//            api.search.searchPlaylist(newText.toString()).items.forEach {
-//                thumb= Thumbnail(it.images.get(it.images.size - 1).url,it.name,it.type,it.id,searchedTracks,"")
-//                thumbnails.add(thumb)
-//            }
-//            searchedTracks.postValue(thumbnails)
-//        }
-//        return searchedTracks
-//    }
+    fun searchPlaylist(newText: String?): MutableLiveData<List<Thumbnail>?>{
+        CoroutineScope(Dispatchers.Main).launch {
+            val api = spotifyAppApi(CLIENT_ID, CLIENT_SECRET).build()
+            var thumb: Thumbnail
+            var thumbnails = ArrayList<Thumbnail>(1)
+            api.search.searchPlaylist(newText.toString()).items.forEach {
+                thumb= Thumbnail(it.images.get(it.images.size - 1).url,it.name,it.type,it.id,searchedPlaylist,"")
+                thumbnails.add(thumb)
+            }
+            searchedPlaylist.postValue(thumbnails)
+        }
+        return searchedPlaylist
+    }
 
     fun fetchNextSong(linkedTrackId: String?): MutableLiveData<Track> {
         CoroutineScope(Dispatchers.IO).launch {

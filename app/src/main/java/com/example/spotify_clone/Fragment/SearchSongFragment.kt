@@ -146,13 +146,6 @@ class SearchSongFragment : Fragment() {
         }
     }
 
-    fun deselectChips( selectedChip:Int){
-        for (i in 0..chipList.size-1){
-            if(i!=selectedChip)
-                chipList.get(i).setBackgroundDrawable(ContextCompat.getDrawable(this.requireContext(),R.drawable.next_button_bg))
-        }
-    }
-
     private fun initialise(view: View?) {
 
         searchCard=view?.findViewById(R.id.search_card)!!

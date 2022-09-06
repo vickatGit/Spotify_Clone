@@ -27,9 +27,9 @@ class SearchSongFragmentViewModel: ViewModel() {
 //    fun searchAlbum(text: String) {
 //        repo.searchAlbums(text)
 //    }
-//    fun searchPlaylist(text:String){
-//        repo.searchPlaylist(text)
-//    }
+    fun searchPlaylist(text:String): MutableLiveData<List<Thumbnail>?> {
+        return repo.searchPlaylist(text)
+    }
 
     fun getSong(songId: String): MutableLiveData<Track?> {
         Log.d("TAG", "getSong: insearchsong viewmodel"+songId)
