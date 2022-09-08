@@ -16,7 +16,7 @@ class HomeFragmentViewModel: ViewModel() {
 
 //        repo.fetchArtists()
         repo.fetchTopList()
-        repo.getSadPlaylist()
+//        repo.getSadPlaylist()
 //        repo.getRecommendations()
         repo.getIndianCategoriesPlaylists()
         repo.getChillPlaylist()

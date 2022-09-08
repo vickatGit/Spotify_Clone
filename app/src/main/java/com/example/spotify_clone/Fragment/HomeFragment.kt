@@ -1,6 +1,8 @@
 package com.example.spotify_clone.Fragment
 
 import android.app.Activity
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 
@@ -11,15 +13,12 @@ import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.adamratzman.spotify.models.Artist
-import com.adamratzman.spotify.models.SimplePlaylist
-import com.example.spotify_clone.Adapters.HomeTopAdapter
 import com.example.spotify_clone.Adapters.ParentClassAdapter
 import com.example.spotify_clone.Models.ApiRelatedModels.Thumbnail
 import com.example.spotify_clone.R
+import com.example.spotify_clone.SpotifyActivity
 import com.example.spotify_clone.ViewModels.HomeFragmentViewModel
 
 class HomeFragment : Fragment() {
@@ -45,6 +44,13 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if(this.resources.configuration.orientation== Configuration.ORIENTATION_LANDSCAPE){
+            SpotifyActivity.landHomeFragment.setBackgroundColor(resources.getColor(R.color.secondaryLightColor))
+            SpotifyActivity.landSearchFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+            SpotifyActivity.landLibraryFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+        }else {
+            SpotifyActivity.bottomNavigationView.menu.findItem(R.id.home).setChecked(true)
+        }
         Log.d(TAG, "onCreateView: lifecycle")
         val view=inflater.inflate(R.layout.fragment_home, container, false)
         initialiseViews(view)

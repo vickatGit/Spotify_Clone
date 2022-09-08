@@ -6,15 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".SpotifyActivity">
 
+
     <FrameLayout
         android:id="@+id/spotify_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-126dp" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/spotify_controller_card"
@@ -22,12 +22,14 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="3dp"
         app:cardCornerRadius="13dp"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="387dp"
             android:layout_height="wrap_content"
             android:background="#201737">
 
@@ -43,7 +45,7 @@
 
                 <ImageView
                     android:id="@+id/song_controller_thumbnail"
-                    android:layout_width="40dp"
+                    android:layout_width="45dp"
                     android:layout_height="40dp"
                     android:scaleType="centerCrop"
 
@@ -57,9 +59,9 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="10dp"
-                android:text="Love again"
-                android:lines="1"
                 android:ellipsize="marquee"
+                android:lines="1"
+                android:text="Love again"
                 android:textColor="@color/secondaryTextColor"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -73,10 +75,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:ellipsize="marquee"
+                android:lines="1"
                 android:text="Dua Lipa"
                 android:textSize="13sp"
-                android:lines="1"
-                android:ellipsize="marquee"
                 app:layout_constraintEnd_toStartOf="@+id/like_btn"
                 app:layout_constraintStart_toEndOf="@+id/song_controller_thumbnail_card"
                 app:layout_constraintTop_toBottomOf="@+id/song_name" />
@@ -98,7 +100,7 @@
                 android:id="@+id/play_pause_song"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="13dp"
+                android:layout_marginEnd="60dp"
                 android:background="@drawable/play_pause_drawable"
                 android:buttonTint="@color/white"
                 android:textOff=""
@@ -106,7 +108,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/song_controller_thumbnail_card"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/song_controller_thumbnail_card" />
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

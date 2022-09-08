@@ -1,6 +1,7 @@
 package com.example.spotify_clone.Fragment
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -36,7 +37,13 @@ class SearchFragment(val spotifyActivity: SpotifyActivity) : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
+        if(this.resources.configuration.orientation== Configuration.ORIENTATION_LANDSCAPE){
+            SpotifyActivity.landHomeFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+            SpotifyActivity.landSearchFragment.setBackgroundColor(resources.getColor(R.color.secondaryLightColor))
+            SpotifyActivity.landLibraryFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+        }else {
+            SpotifyActivity.bottomNavigationView.menu.findItem(R.id.search).setChecked(true)
+        }
         val view=inflater.inflate(R.layout.fragment_search, container, false)
         initialise(view)
         viewmodel=ViewModelProvider(this).get(SearchGenresViewModel::class.java)

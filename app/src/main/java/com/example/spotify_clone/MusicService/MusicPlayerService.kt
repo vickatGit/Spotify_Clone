@@ -35,7 +35,7 @@ import com.google.android.exoplayer2.ui.PlayerControlView
 class MusicPlayerService : Service() {
 
     var playerView: PlayerControlView?=null
-    private var exo=ExoPlayer.Builder(SpotifyActivity.playerview.context).build()
+
     val musicBinder=MusicBinder()
     var pos:Int=0
     var image:Bitmap?=null
@@ -43,6 +43,7 @@ class MusicPlayerService : Service() {
 
 
     companion object{
+        var exo=ExoPlayer.Builder(SpotifyActivity.playerview.context).build()
         val ACTION_PLAY="play_pause_song"
         val ACTION_NEXT="seek_to_next_song"
         val ACTION_PREV="seek_to_previous_song"
@@ -124,13 +125,15 @@ class MusicPlayerService : Service() {
 //            showNotification(R.drawable.play_icon)
         }
     }
-    fun addAllSOngsAndPlay(mediaList: ArrayList<MediaItem>, songPosition: Int) {
+    fun addAllSOngsAndPlay(mediaList: ArrayList<MediaItem>, songPosition: Int, autoPlay: Boolean?) {
         initPlayer()
         exo.setMediaItems(mediaList)
         exo.seekTo(songPosition,0)
         exo.prepare()
-        exo.playWhenReady=true
-        exo.play()
+        if(autoPlay==true) {
+            exo.playWhenReady = true
+            exo.play()
+        }
     }
 
     override fun onRebind(intent: Intent?) {

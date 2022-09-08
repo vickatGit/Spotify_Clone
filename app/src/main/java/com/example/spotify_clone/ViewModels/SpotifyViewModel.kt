@@ -66,4 +66,13 @@ class SpotifyViewModel: ViewModel() {
     fun getFavouriteSongs(): MutableLiveData<List<String>?> {
         return repo.getSongFavourites(userId)
     }
+
+    fun saveLastPlayback(currentSong: TrackModel?) {
+        repo.saveLastPlayback(currentSong,userId)
+    }
+    fun getLastPlayback(): MutableLiveData<TrackModel> {
+        return repo.getLastPlayback(userId)
+    }
+
+
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.adamratzman.spotify.models.Track
@@ -24,8 +25,8 @@ import com.example.spotify_clone.ViewModels.SearchSongFragmentViewModel
 
 class SearchSongAdapter(
     val searchedResults: ArrayList<Track>,
-    val viewModel: SearchSongFragmentViewModel,
-    val searchSongFragment: SearchSongResultsFragment
+    val viewModel: SearchSongFragmentViewModel?,
+    val searchSongFragment: Fragment
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     enum class layout{
         playlist,album,track,artist

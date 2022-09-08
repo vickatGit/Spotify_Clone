@@ -2,12 +2,15 @@ package com.example.spotify_clone
 
 import android.content.*
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,12 +34,17 @@ class SpotifyActivity : AppCompatActivity() {
     private lateinit var playPause:ToggleButton
     private lateinit var isFavourite:ToggleButton
     private lateinit var songProgress:ProgressBar
-    private lateinit var bottomNavigationView:BottomNavigationView
+    private lateinit var songPlayer:CardView
+
     private lateinit var viewModel:SpotifyViewModel
 
     private lateinit var fragmentContainer:FrameLayout
     private lateinit var musicServiceConnection:MusicPlayerService
     companion object{
+        lateinit var landHomeFragment:CardView
+        lateinit var landSearchFragment:CardView
+        lateinit var landLibraryFragment:CardView
+        lateinit var bottomNavigationView:BottomNavigationView
         var currentPlaylistId:String?=null
         var currentSong:TrackModel?=null
         private var intent:Intent=Intent()
@@ -84,6 +92,7 @@ class SpotifyActivity : AppCompatActivity() {
             var songPosition=intent?.getIntExtra("song_position",0)
             var tracks=intent?.getParcelableArrayListExtra<TrackModel>("track")
             var songId=intent?.getStringExtra("song_id")
+            var autoPlay=intent?.getBooleanExtra("auto_play",true)
             Log.d(TAG, "onReceive: the song id is $songId")
             if(playlistTracks.size!=0) {
                 val isExist= playlistTracks.indexOfFirst { it.id==songId }
@@ -91,11 +100,11 @@ class SpotifyActivity : AppCompatActivity() {
                     musicServiceConnection.seekToThisPosition(isExist)
                     Log.d("song_reciever", "onReceive: in if 1")
                 } else {
-                    addSongsAndPlay(tracks, songPosition!!)
+                    addSongsAndPlay(tracks, songPosition!!,autoPlay)
                     Log.d("song_reciever", "onReceive: in else 1")
                 }
             }else {
-                addSongsAndPlay(tracks, songPosition!!)
+                addSongsAndPlay(tracks, songPosition!!,autoPlay)
                 Log.d("song_reciever", "onReceive: in else 2")
             }
 
@@ -177,6 +186,7 @@ class SpotifyActivity : AppCompatActivity() {
     var updateCurrentSongInfo:BroadcastReceiver=object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             val songInfo=intent?.getIntExtra(CURRENT_SONG_POSITION,0)
+            songPlayer.visibility= View.VISIBLE
             viewModel.setCurrentSong(songInfo)
             Glide.with(applicationContext).load(playlistTracks.get(songInfo!!).image).into(songThumb)
             songArtist.text = playlistTracks.get(songInfo!!)?.artist
@@ -218,7 +228,7 @@ class SpotifyActivity : AppCompatActivity() {
                         } else {
                             Log.d("playlistFragment", "onReceive: in 2nd else")
                             val mediaList = ArrayList<MediaItem>(1)
-                            addSongsAndPlay(playlist, 0)
+                            addSongsAndPlay(playlist, 0, true)
                         }
 
                 }
@@ -226,7 +236,7 @@ class SpotifyActivity : AppCompatActivity() {
                 else {
                     Log.d("playlistFragment", "onReceive: in 2nd else")
                     val mediaList = ArrayList<MediaItem>(1)//if action is null then playlist cannot be null  and vice versa
-                    addSongsAndPlay(playlist, 0)
+                    addSongsAndPlay(playlist, 0, true)
                 }
             }
 
@@ -259,6 +269,33 @@ class SpotifyActivity : AppCompatActivity() {
         if(viewModel.getUserId()==null) {
             viewModel.setUserId(userId)
         }
+        viewModel.getLastPlayback().observe(this, Observer {
+            if(it!=null){
+                currentSong=it
+                songPlayer.visibility=View.VISIBLE
+                Glide.with(this).load(currentSong!!.image).override(50,50).placeholder(R.drawable.sample_artist).into(songThumb)
+                controllerSongName.text = currentSong!!.name
+                songArtist.text = currentSong!!.artist
+                Log.d("TAG", "track name: " + currentSong?.name + "and album name is")
+
+                val intent = Intent()
+                val bundle = Bundle()
+                intent.putExtra("song_position",0)
+                intent.putExtra("song_id",currentSong?.id)
+                intent.putExtra("track", arrayListOf(currentSong))
+                intent.putExtra("auto_play",false)
+                intent.setAction(PlaylistFragment.ADD_SONG)
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+                MusicPlayerService.exo.pause()
+
+
+//                playPause.setOnClickListener{
+//
+//                }
+            }else{
+                songPlayer.visibility=View.INVISIBLE
+            }
+        })
         viewModel.getFavouriteSongs().observe(this, Observer {
             if (it?.size!! > 0) {
                 userFavouriteSongs.addAll(it)
@@ -286,20 +323,51 @@ class SpotifyActivity : AppCompatActivity() {
 
 
 
+        if(this.resources.configuration.orientation==Configuration.ORIENTATION_LANDSCAPE){
+            landHomeFragment.setOnClickListener {
+                val homeFragment=HomeFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.spotify_frame,homeFragment).addToBackStack(null).commit()
+            }
+            landSearchFragment.setOnClickListener {
+                val searchFragment=SearchFragment(this)
+                supportFragmentManager.beginTransaction().replace(R.id.spotify_frame,searchFragment).addToBackStack(null).commit()
+            }
+            landLibraryFragment.setOnClickListener {
+                val likedSongsFragment=LikedSongsFragment()
+                val bundle=Bundle()
+                bundle.putString("userId",viewModel.getUserId())
+                likedSongsFragment.arguments=bundle
+                supportFragmentManager.beginTransaction().replace(R.id.spotify_frame,likedSongsFragment).addToBackStack(null).commit()
+            }
+        }else {
 
-        val pos=bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.home -> {
-                    val homeFragment=HomeFragment()
-                    supportFragmentManager.beginTransaction().replace(R.id.spotify_frame,homeFragment).addToBackStack(null).commit()
-                    return@setOnItemSelectedListener true
+            val pos = bottomNavigationView.setOnItemSelectedListener {
+                when (it.itemId) {
+                    R.id.home -> {
+                        val homeFragment = HomeFragment()
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.spotify_frame, homeFragment).addToBackStack(null).commit()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.search -> {
+                        val searchFragment = SearchFragment(this)
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.spotify_frame, searchFragment).addToBackStack(null)
+                            .commit()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.library -> {
+                        val likedSongsFragment = LikedSongsFragment()
+                        val bundle = Bundle()
+                        bundle.putString("userId", viewModel.getUserId())
+                        likedSongsFragment.arguments = bundle
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.spotify_frame, likedSongsFragment).addToBackStack(null)
+                            .commit()
+                        return@setOnItemSelectedListener true
+                    }
+                    else -> return@setOnItemSelectedListener false
                 }
-                R.id.search -> {
-                    val searchFragment=SearchFragment(this)
-                    supportFragmentManager.beginTransaction().replace(R.id.spotify_frame,searchFragment).addToBackStack(null).commit()
-                    return@setOnItemSelectedListener true
-                }
-                else -> return@setOnItemSelectedListener false
             }
         }
 
@@ -349,33 +417,61 @@ class SpotifyActivity : AppCompatActivity() {
         controllerSongName=findViewById(R.id.song_name)
         songProgress = findViewById(R.id.song_progress)
         songProgress.progressTintList= ColorStateList.valueOf(Color.WHITE)
-        bottomNavigationView=findViewById(R.id.bottomNavigationView)
         playerview=findViewById(R.id.playerview)
         playPause=findViewById(R.id.play_pause_song)
+        songPlayer=findViewById(R.id.spotify_controller_card)
+        songPlayer.visibility=View.INVISIBLE
         fragmentContainer=findViewById(R.id.spotify_frame)
+
+        if(this.resources.configuration.orientation==Configuration.ORIENTATION_LANDSCAPE) {
+            landHomeFragment = findViewById(R.id.home_land)
+            landSearchFragment = findViewById(R.id.search_land)
+            landLibraryFragment = findViewById(R.id.libraary_land)
+            SpotifyActivity.landHomeFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+            SpotifyActivity.landSearchFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+            SpotifyActivity.landLibraryFragment.setBackgroundColor(resources.getColor(R.color.spotify_background))
+        }else{
+            bottomNavigationView=findViewById(R.id.bottomNavigationView)
+        }
     }
 
-    fun addSongsAndPlay(tracks: java.util.ArrayList<TrackModel>?, songPosition: Int) {
+
+    fun addSongsAndPlay(
+        tracks: java.util.ArrayList<TrackModel>?,
+        songPosition: Int,
+        autoPlay: Boolean?
+    ) {
         playlistTracks.clear()
         val mediaList=ArrayList<MediaItem>(1)
+        var i=0
         tracks?.forEach {
             if(it.previewUrl!=null) {
                 mediaList.add(MediaItem.fromUri(it.previewUrl!!))
                 playlistTracks.add(it)
+                if(userFavouriteSongs.contains(playlistTracks.get(i).id))
+                    playlistTracks.get(i).isFavourite=true
             }
             viewModel.setPlaylistTracks(playlistTracks)
         }
-        musicServiceConnection.addAllSOngsAndPlay(mediaList,songPosition)
+        musicServiceConnection.addAllSOngsAndPlay(mediaList,songPosition,autoPlay)
+    }
+
+    override fun onPause() {
+        viewModel.saveLastPlayback(currentSong)
+        super.onPause()
     }
     override fun onDestroy() {
-        super.onDestroy()
+
         stopService(intent)
+        super.onDestroy()
     }
     override fun onBackPressed() {
         var frag: Fragment? =supportFragmentManager.findFragmentById(R.id.spotify_frame)
-        val frag2=supportFragmentManager.findFragmentById(R.id.home_fragment)
-        if(supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount-1)==frag2)
-            Log.d(TAG, "onBackPressed: ")
+
+        Log.d(TAG, "onBackPressed: "+frag)
+        if(frag is HomeFragment ) {
+            finish()
+        }
         else if(supportFragmentManager.backStackEntryCount >0) {
             supportFragmentManager.popBackStack()
             viewModel.popFragmentHistoty()
