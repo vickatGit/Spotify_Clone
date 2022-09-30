@@ -12,6 +12,7 @@
 ## 🔥 Services Used
 
 1. **Exoplayer** - for Playing songs
+1. **Coroutines** - for Threading
 1. **Glide** - for image loading and caching
 1. **Bcrypt** - for encrypting data (passwords)
 1. **hdodenhof/circleimageview** - for circular images
