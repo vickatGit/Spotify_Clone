@@ -1,4 +1,4 @@
-<h1 align="center"> Spotify clone</h1>
+<h1 align="center"> Spotify clone - MVVM based</h1>
 <img src="https://firebasestorage.googleapis.com/v0/b/food-clone-c7e62.appspot.com/o/spotify_readme_image_croped.jpg?alt=media&token=c72fb9c1-2b1d-4b26-86b2-83698c05561a">
 
 
